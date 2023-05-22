@@ -24,3 +24,8 @@ hs_err_pid*
 replay_pid*
 /target/
 src/main/java/META-INF/persistence.xml
+.$ER.drawio.dtmp
+.$ER.drawio.bkp
+.$Class.drawio.dtmp
+.$Class.drawio.bkp
+.$ER.drawio.bkp
