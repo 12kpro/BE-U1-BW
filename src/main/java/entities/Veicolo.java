@@ -23,6 +23,7 @@ import utils.TipoVeicolo;
 public class Veicolo {
 	@Id
 	@OneToMany(mappedBy = "veicolo")
+	@OneToMany(mappedBy = "veicoloId")
 	private UUID id = UUID.randomUUID();
 	@Enumerated(EnumType.STRING)
 	private TipoVeicolo tipoVeicolo;
