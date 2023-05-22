@@ -1,6 +1,7 @@
 package entities;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -18,13 +19,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class Utente {
-	@OneToMany(mappedBy = "tessera_id")
 	@Id
 	private UUID id = UUID.randomUUID();
 	private String nome;
 	private String cognome;
 	private LocalDate dataInizio;
 	private LocalDate dataFine;
+	@OneToMany(mappedBy = "tesseraId")
+	private List<Abbonamento> documentiViaggio;
 
 	public Utente(String nome, String cognome, LocalDate dataInizio, LocalDate dataFine) {
 		this.nome = nome;

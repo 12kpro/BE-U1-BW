@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -8,6 +9,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -22,7 +24,6 @@ import utils.TipoVeicolo;
 @NoArgsConstructor
 public class Veicolo {
 	@Id
-	@OneToMany(mappedBy = "veicoloId")
 	private UUID id = UUID.randomUUID();
 	@Enumerated(EnumType.STRING)
 	private TipoVeicolo tipoVeicolo;
@@ -31,12 +32,25 @@ public class Veicolo {
 	@ManyToOne
 	private Tratta trattaId;
 
+	@OneToMany(mappedBy = "veicoloId")
+	private List<Percorrenza> percorrenze;
+	@OneToMany(mappedBy = "veicoloId")
+	private List<Manutenzione> manutenzioni;
+
 	public Veicolo(TipoVeicolo tipoVeicolo, boolean inServizio, Tratta trattaId) {
 		super();
 		this.tipoVeicolo = tipoVeicolo;
-		this.capienza = tipoVeicolo == TipoVeicolo.TRAM ? 40 : 20;
 		this.inServizio = inServizio;
 		this.trattaId = trattaId;
+	}
+
+	@PrePersist
+	public void capienza() {
+		if (tipoVeicolo == TipoVeicolo.TRAM) {
+			this.capienza = 60;
+		} else if (tipoVeicolo == TipoVeicolo.AUTOBUS) {
+			this.capienza = 50;
+		}
 	}
 
 	@Override

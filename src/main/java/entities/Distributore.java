@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -18,11 +19,12 @@ import utils.TipoDistributore;
 @Setter
 @NoArgsConstructor
 public class Distributore {
-	@OneToMany(mappedBy = "distributore_id")
 	@Id
 	private UUID id = UUID.randomUUID();
 	private TipoDistributore tipo;
 	private Boolean attivo;
+	@OneToMany(mappedBy = "distributoreId")
+	private List<DocumentoViaggio> documentiViaggio;
 
 	public Distributore(TipoDistributore tipo, Boolean attivo) {
 		this.tipo = tipo;

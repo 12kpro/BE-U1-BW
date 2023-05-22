@@ -24,7 +24,7 @@ public class Percorrenza {
 	private LocalDate oraPartenza;
 	private LocalDate oraArrivo;
 	private long tempoPercorrenza;
-	// @ManyToOne
+	@ManyToOne
 	private Veicolo veicoloId;
 	@ManyToOne
 	private Tratta trattaId;

@@ -1,5 +1,6 @@
 package entities;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.Entity;
@@ -18,11 +19,12 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Tratta {
 	@Id
-	@OneToMany(mappedBy = "trattaId")
 	private UUID id = UUID.randomUUID();
 	private String partenza;
 	private String capolinea;
 	private double tempoPercorrenzaMedio;
+	@OneToMany(mappedBy = "trattaId")
+	private List<Percorrenza> percorrenze;
 
 	public Tratta(String partenza, String capolinea) {
 		this.partenza = partenza;
