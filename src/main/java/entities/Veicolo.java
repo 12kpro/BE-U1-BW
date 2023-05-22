@@ -22,7 +22,6 @@ import utils.TipoVeicolo;
 @NoArgsConstructor
 public class Veicolo {
 	@Id
-	@OneToMany(mappedBy = "veicolo")
 	@OneToMany(mappedBy = "veicoloId")
 	private UUID id = UUID.randomUUID();
 	@Enumerated(EnumType.STRING)

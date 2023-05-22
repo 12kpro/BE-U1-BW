@@ -23,19 +23,19 @@ public class Manutenzione {
 	private LocalDate data_inizio;
 	private LocalDate data_fine;
 	@ManyToOne
-	private Veicolo veicolo;
+	private Veicolo veicoloId;
 
 	public Manutenzione(LocalDate data_inizio, LocalDate data_fine, Veicolo veicolo) {
 		super();
 		this.data_inizio = data_inizio;
 		this.data_fine = data_fine;
-		this.veicolo = veicolo;
+		this.veicoloId = veicolo;
 	}
 
 	@Override
 	public String toString() {
 		return "Manutenzione [id=" + id + ", data_inizio=" + data_inizio + ", data_fine=" + data_fine + ", veicolo="
-				+ veicolo + "]";
+				+ veicoloId + "]";
 	}
 
 }
