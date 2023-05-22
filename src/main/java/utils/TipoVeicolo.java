@@ -1,5 +1,5 @@
 package utils;
 
-public enum Veicolo {
+public enum TipoVeicolo {
 	TRAM, AUTOBUS
 }
