@@ -11,6 +11,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import app.Application;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,9 +30,9 @@ public abstract class DocumentoViaggio {
 	@ManyToOne
 	private Distributore distributoreId;
 
-	public DocumentoViaggio(LocalDate dataEmissione, Distributore distributoreId) {
+	public DocumentoViaggio(String dataEmissione, Distributore distributoreId) {
 		super();
-		this.dataEmissione = dataEmissione;
+		this.dataEmissione = LocalDate.parse(dataEmissione, Application.dateFormatter);
 		this.distributoreId = distributoreId;
 	}
 

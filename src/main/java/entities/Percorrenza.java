@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import app.Application;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,12 +30,12 @@ public class Percorrenza {
 	@ManyToOne
 	private Tratta trattaId;
 
-	public Percorrenza(LocalDate oraPartenza, LocalDate oraArrivo, Veicolo veicoloId, Tratta trattaId) {
-		this.oraPartenza = oraPartenza;
-		this.oraArrivo = oraArrivo;
+	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicoloId, Tratta trattaId) {
+		this.oraPartenza = LocalDate.parse(oraPartenza, Application.dateFormatter);
+		this.oraArrivo = LocalDate.parse(oraArrivo, Application.dateFormatter);
 		this.veicoloId = veicoloId;
 		this.trattaId = trattaId;
-		this.tempoPercorrenza = ChronoUnit.SECONDS.between(oraArrivo, oraPartenza);
+		this.tempoPercorrenza = ChronoUnit.SECONDS.between(this.oraArrivo, this.oraPartenza);
 
 	}
 

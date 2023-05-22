@@ -21,7 +21,7 @@ public class Abbonamento extends DocumentoViaggio {
 	@ManyToOne
 	private Utente tesseraId;
 
-	public Abbonamento(LocalDate dataEmissione, Distributore distributoreId, TipoAbbonamento tipo, Utente tesseraId) {
+	public Abbonamento(String dataEmissione, Distributore distributoreId, TipoAbbonamento tipo, Utente tesseraId) {
 		super(dataEmissione, distributoreId);
 		this.tipo = tipo;
 		this.tesseraId = tesseraId;

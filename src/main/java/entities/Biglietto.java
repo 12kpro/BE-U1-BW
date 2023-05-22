@@ -18,8 +18,7 @@ public class Biglietto extends DocumentoViaggio {
 	@ManyToOne
 	private Veicolo veicoloId;
 
-	public Biglietto(LocalDate dataEmissione, Distributore distributoreId, LocalDate dataVidimazione,
-			Veicolo veicoloId) {
+	public Biglietto(String dataEmissione, Distributore distributoreId, LocalDate dataVidimazione, Veicolo veicoloId) {
 		super(dataEmissione, distributoreId);
 		this.dataVidimazione = dataVidimazione;
 		this.veicoloId = veicoloId;

@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import app.Application;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,10 +26,10 @@ public class Manutenzione {
 	@ManyToOne
 	private Veicolo veicoloId;
 
-	public Manutenzione(LocalDate data_inizio, LocalDate data_fine, Veicolo veicolo) {
+	public Manutenzione(String data_inizio, String data_fine, Veicolo veicolo) {
 		super();
-		this.data_inizio = data_inizio;
-		this.data_fine = data_fine;
+		this.data_inizio = LocalDate.parse(data_inizio, Application.dateFormatter);
+		this.data_fine = LocalDate.parse(data_fine, Application.dateFormatter);
 		this.veicoloId = veicolo;
 	}
 

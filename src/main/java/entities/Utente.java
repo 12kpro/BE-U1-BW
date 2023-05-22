@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import app.Application;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,11 +29,11 @@ public class Utente {
 	@OneToMany(mappedBy = "tesseraId")
 	private List<Abbonamento> documentiViaggio;
 
-	public Utente(String nome, String cognome, LocalDate dataInizio, LocalDate dataFine) {
+	public Utente(String nome, String cognome, String dataInizio, String dataFine) {
 		this.nome = nome;
 		this.cognome = cognome;
-		this.dataInizio = dataInizio;
-		this.dataFine = dataFine;
+		this.dataInizio = LocalDate.parse(dataInizio, Application.dateFormatter);
+		this.dataFine = LocalDate.parse(dataFine, Application.dateFormatter);
 	}
 
 	@Override
