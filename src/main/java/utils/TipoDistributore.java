@@ -1,5 +1,5 @@
 package utils;
 
-public enum Distributore {
+public enum TipoDistributore {
 	AUTOMATICO, RIVENDITORE
 }
