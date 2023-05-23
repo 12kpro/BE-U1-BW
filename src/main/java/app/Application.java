@@ -10,7 +10,7 @@ import utils.JpaUtil;
 
 @Slf4j
 public class Application {
-	public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 	private static EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	static final Boolean populate = false;
 

@@ -25,8 +25,7 @@ public class Manutenzione {
 	@Column(nullable = false)
 	private LocalDate data_inizio;
 	private LocalDate data_fine;
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	private Veicolo veicoloId;
 
 	public Manutenzione(String data_inizio, String data_fine, Veicolo veicolo) {

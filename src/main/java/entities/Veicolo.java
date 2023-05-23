@@ -3,6 +3,7 @@ package entities;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,7 +20,7 @@ import lombok.Setter;
 import utils.TipoVeicolo;
 
 @Entity
-@Table
+@Table(name = "veicoli")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -37,7 +38,7 @@ public class Veicolo {
 
 	@OneToMany(mappedBy = "veicoloId")
 	private List<Percorrenza> percorrenze;
-	@OneToMany(mappedBy = "veicoloId")
+	@OneToMany(mappedBy = "veicoloId", cascade = CascadeType.ALL)
 	private List<Manutenzione> manutenzioni;
 
 	public Veicolo(TipoVeicolo tipoVeicolo, boolean inServizio, Tratta trattaId) {

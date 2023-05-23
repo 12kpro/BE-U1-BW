@@ -1,6 +1,5 @@
 package entities;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,11 +16,10 @@ import utils.TipoAbbonamento;
 @NoArgsConstructor
 public class Abbonamento extends DocumentoViaggio {
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	// @Column(nullable = false)
 	private TipoAbbonamento tipo;
 	// private LocalDate dataScadenza; // calcolato?
 	@ManyToOne
-	@Column(nullable = false)
 	private Utente tesseraId;
 
 	public Abbonamento(String dataEmissione, Distributore distributoreId, TipoAbbonamento tipo, Utente tesseraId) {

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -29,7 +30,7 @@ public class Utente {
 	private String cognome;
 	@Column(nullable = false)
 	private LocalDate dataInizio;
-	@OneToMany(mappedBy = "tesseraId")
+	@OneToMany(mappedBy = "tesseraId", cascade = CascadeType.ALL)
 	private List<Abbonamento> documentiViaggio;
 
 	public Utente(String nome, String cognome, String dataInizio) {

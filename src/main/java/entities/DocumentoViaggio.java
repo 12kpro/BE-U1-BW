@@ -29,8 +29,7 @@ public abstract class DocumentoViaggio {
 	private UUID id = UUID.randomUUID();
 	@Column(nullable = false)
 	protected LocalDate dataEmissione;
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	private Distributore distributoreId;
 
 	public DocumentoViaggio(String dataEmissione, Distributore distributoreId) {

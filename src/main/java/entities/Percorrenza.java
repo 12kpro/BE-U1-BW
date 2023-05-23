@@ -1,7 +1,6 @@
 package entities;
 
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -24,22 +23,21 @@ public class Percorrenza {
 	@Id
 	private UUID id = UUID.randomUUID();
 	@Column(nullable = false)
-	private LocalDate oraPartenza;
-	private LocalDate oraArrivo;
-	private long tempoPercorrenza;
-	@ManyToOne
-	@Column(nullable = false)
+	private LocalDateTime oraPartenza;
+	private LocalDateTime oraArrivo;
+	private long tempoPercorrenza; // Calcolato
+	@ManyToOne(optional = false)
 	private Veicolo veicoloId;
-	@ManyToOne
-	@Column(nullable = false)
+	@ManyToOne(optional = false)
 	private Tratta trattaId;
 
 	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicoloId, Tratta trattaId) {
-		this.oraPartenza = LocalDate.parse(oraPartenza, Application.dateFormatter);
-		this.oraArrivo = LocalDate.parse(oraArrivo, Application.dateFormatter);
+		this.oraPartenza = LocalDateTime.parse(oraPartenza, Application.dateFormatter);
+		this.oraArrivo = LocalDateTime.parse(oraArrivo, Application.dateFormatter);
 		this.veicoloId = veicoloId;
 		this.trattaId = trattaId;
-		this.tempoPercorrenza = ChronoUnit.SECONDS.between(this.oraArrivo, this.oraPartenza);
+		/// this.tempoPercorrenza = ChronoUnit.SECONDS.between(this.oraArrivo,
+		/// this.oraPartenza);
 
 	}
 
