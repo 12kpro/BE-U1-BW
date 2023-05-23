@@ -47,7 +47,7 @@ public class UtenteDao {
 		}
 	}
 
-	public void update(Utente u) {
+	public void update(Utente u) throws HibernateException, ConstraintViolationException {
 		em.getTransaction().begin();
 		em.merge(u);
 		em.getTransaction().commit();

@@ -48,7 +48,7 @@ public class DistributoreDao {
 		}
 	}
 
-	public void update(Distributore d) {
+	public void update(Distributore d) throws HibernateException, ConstraintViolationException {
 		em.getTransaction().begin();
 		em.merge(d);
 		em.getTransaction().commit();
