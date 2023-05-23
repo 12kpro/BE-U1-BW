@@ -29,7 +29,7 @@ public class DocumentoViaggioDao {
 
 	}
 
-	public DocumentoViaggio getById(UUID id) throws HibernateException, ConstraintViolationException {
+	public DocumentoViaggio findById(UUID id) throws HibernateException, ConstraintViolationException {
 
 		DocumentoViaggio found = em.find(DocumentoViaggio.class, id);
 		return found;

@@ -28,7 +28,7 @@ public class UtenteDao {
 
 	}
 
-	public Utente getById(UUID id) throws HibernateException, ConstraintViolationException {
+	public Utente findById(UUID id) throws HibernateException, ConstraintViolationException {
 
 		Utente found = em.find(Utente.class, id);
 		return found;
@@ -45,6 +45,12 @@ public class UtenteDao {
 		} else {
 			log.info("Utente con id " + id + " non trovato!");
 		}
+	}
+
+	public void update(Utente u) {
+		em.getTransaction().begin();
+		em.merge(u);
+		em.getTransaction().commit();
 	}
 
 }

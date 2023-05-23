@@ -48,4 +48,10 @@ public class DistributoreDao {
 		}
 	}
 
+	public void update(Distributore d) {
+		em.getTransaction().begin();
+		em.merge(d);
+		em.getTransaction().commit();
+	}
+
 }
