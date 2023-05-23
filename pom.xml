@@ -48,10 +48,6 @@
 	    <version>1.18.26</version>
 	    <scope>provided</scope>
 	</dependency>
-	<dependency>
-		<groupId>BE-U1-W3-D2</groupId>
-		<artifactId>BE-U1-W3-D2</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</dependency>
+	
   </dependencies>  
 </project>
