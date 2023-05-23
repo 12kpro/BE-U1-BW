@@ -8,8 +8,6 @@ import javax.persistence.EntityTransaction;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 
-import entities.Abbonamento;
-import entities.Biglietto;
 import entities.DocumentoViaggio;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,21 +47,6 @@ public class DocumentoViaggioDao {
 		} else {
 			log.info("Documento di viaggio con id " + id + " non trovato!");
 		}
-	}
-
-	public void update(DocumentoViaggio d) throws HibernateException, ConstraintViolationException {
-		em.getTransaction().begin();
-
-		if (d instanceof Biglietto) {
-			em.merge((Biglietto) d);
-
-		} else if (d instanceof Abbonamento) {
-			em.merge((Abbonamento) d);
-
-		} else {
-			log.error("TIPO DI DOCUMENTO VIAGGIO NON VALIDO");
-		}
-		em.getTransaction().commit();
 	}
 
 }
