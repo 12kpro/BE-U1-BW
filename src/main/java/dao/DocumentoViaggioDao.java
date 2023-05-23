@@ -24,7 +24,11 @@ public class DocumentoViaggioDao {
 		transaction.begin();
 		em.persist(d);
 		transaction.commit();
+<<<<<<< Updated upstream
 		log.info("DocumentoViaggio salvato!");
+=======
+		log.info("Documento di viaggio salvato!");
+>>>>>>> Stashed changes
 
 	}
 
@@ -41,9 +45,15 @@ public class DocumentoViaggioDao {
 			transaction.begin();
 			em.remove(found);
 			transaction.commit();
+<<<<<<< Updated upstream
 			log.info("DocumentoViaggio con id " + id + " eliminato!");
 		} else {
 			log.info("DocumentoViaggio con id " + id + " non trovato!");
+=======
+			log.info("Documento di viaggio con id " + id + " eliminato!");
+		} else {
+			log.info("Documento di viaggio con id " + id + " non trovato!");
+>>>>>>> Stashed changes
 		}
 	}
 
