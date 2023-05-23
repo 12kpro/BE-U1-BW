@@ -1,10 +1,10 @@
 package entities;
 
-import java.time.LocalDate;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,9 +16,12 @@ import utils.TipoAbbonamento;
 @Setter
 @NoArgsConstructor
 public class Abbonamento extends DocumentoViaggio {
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private TipoAbbonamento tipo;
-	private LocalDate dataScadenza;
+	// private LocalDate dataScadenza; // calcolato?
 	@ManyToOne
+	@Column(nullable = false)
 	private Utente tesseraId;
 
 	public Abbonamento(String dataEmissione, Distributore distributoreId, TipoAbbonamento tipo, Utente tesseraId) {
@@ -27,18 +30,15 @@ public class Abbonamento extends DocumentoViaggio {
 		this.tesseraId = tesseraId;
 	}
 
-	@PrePersist
-	public void dataScadenza() {
-		if (tipo == TipoAbbonamento.SETTIMANALE) {
-			this.dataScadenza = dataEmissione.plusDays(7);
-		} else if (tipo == TipoAbbonamento.MENSILE) {
-			this.dataScadenza = dataEmissione.plusDays(30);
-		}
-	}
-
+	/*
+	 * @PrePersist public void dataScadenza() { if (tipo ==
+	 * TipoAbbonamento.SETTIMANALE) { this.dataScadenza = dataEmissione.plusDays(7);
+	 * } else if (tipo == TipoAbbonamento.MENSILE) { this.dataScadenza =
+	 * dataEmissione.plusDays(30); } }
+	 */
 	@Override
 	public String toString() {
-		return "Abbonamento [tipo=" + tipo + ", dataScadenza=" + dataScadenza + ", tessera_id=" + tesseraId + "]";
+		return "Abbonamento [tipo=" + tipo + ", tessera_id=" + tesseraId + "]";
 	}
 
 }

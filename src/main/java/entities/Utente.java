@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -22,24 +23,24 @@ import lombok.Setter;
 public class Utente {
 	@Id
 	private UUID id = UUID.randomUUID();
+	@Column(nullable = false)
 	private String nome;
+	@Column(nullable = false)
 	private String cognome;
+	@Column(nullable = false)
 	private LocalDate dataInizio;
-	private LocalDate dataFine;
 	@OneToMany(mappedBy = "tesseraId")
 	private List<Abbonamento> documentiViaggio;
 
-	public Utente(String nome, String cognome, String dataInizio, String dataFine) {
+	public Utente(String nome, String cognome, String dataInizio) {
 		this.nome = nome;
 		this.cognome = cognome;
 		this.dataInizio = LocalDate.parse(dataInizio, Application.dateFormatter);
-		this.dataFine = LocalDate.parse(dataFine, Application.dateFormatter);
 	}
 
 	@Override
 	public String toString() {
-		return "Utente [id=" + id + ", nome=" + nome + ", cognome=" + cognome + ", dataInizio=" + dataInizio
-				+ ", dataFine=" + dataFine + "]";
+		return "Utente [id=" + id + ", nome=" + nome + ", cognome=" + cognome + ", dataInizio=" + dataInizio + "]";
 	}
 
 }

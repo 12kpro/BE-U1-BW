@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -22,12 +23,15 @@ import lombok.Setter;
 public class Percorrenza {
 	@Id
 	private UUID id = UUID.randomUUID();
+	@Column(nullable = false)
 	private LocalDate oraPartenza;
 	private LocalDate oraArrivo;
 	private long tempoPercorrenza;
 	@ManyToOne
+	@Column(nullable = false)
 	private Veicolo veicoloId;
 	@ManyToOne
+	@Column(nullable = false)
 	private Tratta trattaId;
 
 	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicoloId, Tratta trattaId) {

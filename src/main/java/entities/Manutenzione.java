@@ -3,6 +3,7 @@ package entities;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -21,9 +22,11 @@ import lombok.Setter;
 public class Manutenzione {
 	@Id
 	private UUID id = UUID.randomUUID();
+	@Column(nullable = false)
 	private LocalDate data_inizio;
 	private LocalDate data_fine;
 	@ManyToOne
+	@Column(nullable = false)
 	private Veicolo veicoloId;
 
 	public Manutenzione(String data_inizio, String data_fine, Veicolo veicolo) {

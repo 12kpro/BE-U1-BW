@@ -3,6 +3,7 @@ package entities;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -20,9 +21,11 @@ import lombok.Setter;
 public class Tratta {
 	@Id
 	private UUID id = UUID.randomUUID();
+	@Column(nullable = false)
 	private String partenza;
+	@Column(nullable = false)
 	private String capolinea;
-	private double tempoPercorrenzaMedio;
+	private double tempoPercorrenzaMedio; // da rimuovere e usare un metodo?
 	@OneToMany(mappedBy = "trattaId")
 	private List<Percorrenza> percorrenze;
 

@@ -3,6 +3,7 @@ package entities;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -26,8 +27,10 @@ import lombok.Setter;
 public abstract class DocumentoViaggio {
 	@Id
 	private UUID id = UUID.randomUUID();
+	@Column(nullable = false)
 	protected LocalDate dataEmissione;
 	@ManyToOne
+	@Column(nullable = false)
 	private Distributore distributoreId;
 
 	public DocumentoViaggio(String dataEmissione, Distributore distributoreId) {

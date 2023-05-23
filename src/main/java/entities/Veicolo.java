@@ -3,6 +3,7 @@ package entities;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,8 +27,10 @@ public class Veicolo {
 	@Id
 	private UUID id = UUID.randomUUID();
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private TipoVeicolo tipoVeicolo;
 	private Integer capienza;
+	@Column(nullable = false)
 	private boolean inServizio;
 	@ManyToOne
 	private Tratta trattaId;
