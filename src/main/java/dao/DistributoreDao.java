@@ -24,10 +24,8 @@ public class DistributoreDao {
 		transaction.begin();
 		em.persist(d);
 		transaction.commit();
-		log.info("Catalogo salvato!");
-=======
+
 		log.info("Distributore salvato!");
->>>>>>> Stashed changes
 
 	}
 
