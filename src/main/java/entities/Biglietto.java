@@ -1,5 +1,6 @@
 package entities;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
@@ -14,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Biglietto extends DocumentoViaggio {
+public class Biglietto extends DocumentoViaggio implements Serializable {
 	private LocalDate dataVidimazione;
 	@ManyToOne
 	private Veicolo veicoloId;

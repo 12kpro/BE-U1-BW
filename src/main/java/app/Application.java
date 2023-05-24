@@ -32,7 +32,9 @@ import utils.TipoVeicolo;
 
 @Slf4j
 public class Application {
-	public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+	public static DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	public static DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
 	private static EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	static final Boolean populate = false;
 
@@ -109,6 +111,8 @@ public class Application {
 			documenti.add(documento6);
 			documenti.add(documento7);
 
+			dvd.createByList(documenti);
+
 			documento3.setDataVidimazione("24-05-2023");
 			documento3.setVeicoloId(veicoli.get(3));
 			bd.update(documento3);
@@ -141,8 +145,8 @@ public class Application {
 
 		} catch (ExceptionInInitializerError e) {
 			log.error(e.getMessage());
-		} finally {
-			emf.close();
 		}
+		emf.close();
 	}
+
 }

@@ -32,7 +32,7 @@ public class PercorrenzaDAO {
 	public void create(Percorrenza p) throws HibernateException, ConstraintViolationException {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
-		em.persist(t);
+		em.persist(p);
 		t.commit();
 		log.info("Percorrenza aggiornata!");
 	}

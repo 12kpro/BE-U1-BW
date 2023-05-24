@@ -38,7 +38,7 @@ public class BigliettoDao {
 	}
 
 	public void update(Biglietto b) throws HibernateException, ConstraintViolationException {
-		Biglietto found = em.find(Biglietto.class, b);
+		Biglietto found = em.find(Biglietto.class, b.getId());
 		if (found != null) {
 			EntityTransaction transaction = em.getTransaction();
 			transaction.begin();

@@ -1,5 +1,6 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ import utils.TipoVeicolo;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Veicolo {
+public class Veicolo implements Serializable {
 	@Id
 	private UUID id = UUID.randomUUID();
 	@Enumerated(EnumType.STRING)

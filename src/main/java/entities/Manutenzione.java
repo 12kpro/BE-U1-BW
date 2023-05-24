@@ -30,8 +30,8 @@ public class Manutenzione {
 
 	public Manutenzione(String data_inizio, String data_fine, Veicolo veicolo) {
 		super();
-		this.data_inizio = LocalDateTime.parse(data_inizio, Application.dateFormatter);
-		this.data_fine = LocalDateTime.parse(data_fine, Application.dateFormatter);
+		this.data_inizio = LocalDateTime.parse(data_inizio, Application.dateTimeFormatter);
+		this.data_fine = LocalDateTime.parse(data_fine, Application.dateTimeFormatter);
 		this.veicoloId = veicolo;
 	}
 
