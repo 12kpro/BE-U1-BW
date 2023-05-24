@@ -73,3 +73,5 @@ public class UtenteDao {
 	}
 
 }
+
+//select *, (datainizio + 365) < now()  as scaduta from utenti u where (datainizio + 365) < now();

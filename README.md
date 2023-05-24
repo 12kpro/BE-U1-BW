@@ -2,8 +2,11 @@ II sistema deve permettere l'emissione dei biglietti, sia da distributori automa
 
 oltre che Ilemissione di abbonamenti settimanali e mensili di tipo nominativo ad utenti dotati di tessera.
 
-La tessera ha validitå annuale e deve essere rinnovata alla scadenza.
-`select *, (datainizio + 365) < now()  as scaduta from utenti u where (datainizio + 365) < now() ;`
+La tessera ha validitå annuale e deve essere rinnovata alla scadenza. 
+
+```
+select *, (datainizio + 365) < now()  as scaduta from utenti u where (datainizio + 365) < now() ;
+```
 
 Ogni biglietto ed abbonamento é identificato da un codice univoco.
 
@@ -77,3 +80,12 @@ select trattaid_id, sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))/count(tra
 where oraarrivo is not null
 group by trattaid_id
 ```
+Esempio metodo e query con parametro/i:
+
+```
+   public List<Prestito>  findByTesseraUtente(String t) {
+        Query q = em.createQuery("SELECT p FROM Prestito p JOIN Utente u on p.utente=u.id WHERE u.numeroTessera = :t");
+        q.setParameter("t", UUID.fromString(t));
+        return q.getResultList();
+    }
+```    

@@ -73,3 +73,15 @@ public class PercorrenzaDAO {
 	}
 
 }
+/*
+ * select trattaid_id,veicoloid_id , count(trattaid_id) as numero from
+ * percorrenze p where oraarrivo is not null group by trattaid_id, veicoloid_id
+ * 
+ * select trattaid_id ,veicoloid_id , sum(EXTRACT(EPOCH FROM (oraarrivo -
+ * orapartenza))) as percorrenza from percorrenze p where oraarrivo is not null
+ * group by trattaid_id, veicoloid_id
+ * 
+ * select trattaid_id, sum(EXTRACT(EPOCH FROM (oraarrivo -
+ * orapartenza)))/count(trattaid_id) as percorrenzamedia from percorrenze p
+ * where oraarrivo is not null group by trattaid_id
+ */
