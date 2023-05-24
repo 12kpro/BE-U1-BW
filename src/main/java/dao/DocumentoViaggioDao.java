@@ -75,8 +75,8 @@ public class DocumentoViaggioDao {
 	}
 
 	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(LocalDate di, LocalDate df, String id) {
-		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT tipo_documento,distributoreid_id , COUNT(*) as numero "
-				+ "FROM documenti_viaggio " + "WHERE dataEmissione BETWEEN dataInizio = :di AND dataFine = :df "
+		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT tipo_documento,distributoreid_id , COUNT(dv) AS numero "
+				+ "FROM DocumentoViaggio dv " + "WHERE dataEmissione BETWEEN dataInizio = :di AND dataFine = :df "
 				+ "GROUP BY tipo_documento, distributoreid_id = :id", DocumentoViaggio.class);
 		q.setParameter("di", di);
 		q.setParameter("df", df);
@@ -89,9 +89,9 @@ public class DocumentoViaggioDao {
 	public List<DocumentoViaggio> getAbbonamentiScaduti(String id) {
 		TypedQuery<DocumentoViaggio> q = em
 				.createQuery(
-						"SELECT * FROM (SELECT *, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
+						"SELECT * FROM (SELECT dv, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
 								+ "THEN  dv.dataemissione + 7 < now() " + "WHEN dv.tipo = 'MENSILE' "
-								+ "THEN dv.dataemissione + 30 < now() END AS scadenza " + "FROM documenti_viaggio dv "
+								+ "THEN dv.dataemissione + 30 < now() END AS scadenza " + "FROM DocumentoViaggio dv "
 								+ "JOIN utenti u on dv.tesseraid_id = :id ) s " + "WHERE scadenza",
 						DocumentoViaggio.class);
 		q.setParameter("id", UUID.fromString(id));
