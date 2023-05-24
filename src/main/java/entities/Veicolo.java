@@ -32,7 +32,7 @@ public class Veicolo {
 	private TipoVeicolo tipoVeicolo;
 	private Integer capienza;
 	@Column(nullable = false)
-	private boolean inServizio;
+	private boolean inServizio = false;
 	@ManyToOne
 	private Tratta trattaId;
 
@@ -41,11 +41,9 @@ public class Veicolo {
 	@OneToMany(mappedBy = "veicoloId", cascade = CascadeType.ALL)
 	private List<Manutenzione> manutenzioni;
 
-	public Veicolo(TipoVeicolo tipoVeicolo, boolean inServizio, Tratta trattaId) {
+	public Veicolo(TipoVeicolo tipoVeicolo) {
 		super();
 		this.tipoVeicolo = tipoVeicolo;
-		this.inServizio = inServizio;
-		this.trattaId = trattaId;
 	}
 
 	@PrePersist

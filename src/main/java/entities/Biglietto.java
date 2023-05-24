@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 
+import app.Application;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,9 +19,13 @@ public class Biglietto extends DocumentoViaggio {
 	@ManyToOne
 	private Veicolo veicoloId;
 
-	public Biglietto(String dataEmissione, Distributore distributoreId, Veicolo veicoloId) {
+	public Biglietto(String dataEmissione, Distributore distributoreId) {
 		super(dataEmissione, distributoreId);
-		this.veicoloId = veicoloId;
+	}
+
+	public void setDataVidimazione(String data) {
+		this.dataVidimazione = LocalDate.parse(data, Application.dateFormatter);
+
 	}
 
 	@Override
