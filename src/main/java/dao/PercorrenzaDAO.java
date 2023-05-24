@@ -72,16 +72,26 @@ public class PercorrenzaDAO {
 		return getAllQuery.getResultList();
 	}
 
+	public List<Percorrenza> getNumPercorrenzePerVeicolo() throws HibernateException, ConstraintViolationException {
+		TypedQuery<Percorrenza> getAllQuery = em.createQuery(
+				"SELECT trattaid_id,veicoloid_id , COUNT(trattaid_id) AS numero "
+						+ "FROM Percorrenza p WHERE oraarrivo IS NOT NULL " + "GROUP BY trattaid_id, veicoloid_id",
+				Percorrenza.class);
+		return getAllQuery.getResultList();
+	}
+
+	public List<Percorrenza> getPercorrenzaMediaPerTratta() {
+		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT trattaid_id, SUM(EXTRACT(EPOCH FROM "
+				+ "(oraarrivo - orapartenza)))/COUNT(trattaid_id) AS percorrenzamedia FROM Percorrenza p WHERE oraarrivo IS NOT NULL"
+				+ "GROUP BY trattaid_id", Percorrenza.class);
+		return getAllQuery.getResultList();
+	}
+
+	public List<Percorrenza> getTempoPercorrenzaPerVeicolo() {
+		TypedQuery<Percorrenza> getAllQuery = em.createQuery(
+				"SELECT trattaid_id ,veicoloid_id , SUM(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  AS tempopercorrenza from Percorrenza p"
+						+ "WHERE oraarrivo IS NOT NULL" + "GROUP BY trattaid_id, veicoloid_id",
+				Percorrenza.class);
+		return getAllQuery.getResultList();
+	}
 }
-/*
- * select trattaid_id,veicoloid_id , count(trattaid_id) as numero from
- * percorrenze p where oraarrivo is not null group by trattaid_id, veicoloid_id
- * 
- * select trattaid_id ,veicoloid_id , sum(EXTRACT(EPOCH FROM (oraarrivo -
- * orapartenza))) as percorrenza from percorrenze p where oraarrivo is not null
- * group by trattaid_id, veicoloid_id
- * 
- * select trattaid_id, sum(EXTRACT(EPOCH FROM (oraarrivo -
- * orapartenza)))/count(trattaid_id) as percorrenzamedia from percorrenze p
- * where oraarrivo is not null group by trattaid_id
- */
