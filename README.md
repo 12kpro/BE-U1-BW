@@ -89,3 +89,8 @@ Esempio metodo e query con parametro/i:
         return q.getResultList();
     }
 ```    
+
+TODO:
+- [x] Testa metodi delle query
+- [ ] Testare metodi delete
+- [ ] Fare Prompt
