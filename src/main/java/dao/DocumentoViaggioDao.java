@@ -86,12 +86,12 @@ public class DocumentoViaggioDao {
 
 	}
 
-	public List<DocumentoViaggio> getAbbonamentiValidi(String id) {
+	public List<DocumentoViaggio> getAbbonamentiScaduti(String id) {
 		TypedQuery<DocumentoViaggio> q = em
 				.createQuery(
-						"select * from (SELECT *, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
+						"SELECT * FROM (SELECT *, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
 								+ "THEN  dv.dataemissione + 7 < now() " + "WHEN dv.tipo = 'MENSILE' "
-								+ "THEN dv.dataemissione  30 < now() END AS scadenza " + "FROM documenti_viaggio dv "
+								+ "THEN dv.dataemissione + 30 < now() END AS scadenza " + "FROM documenti_viaggio dv "
 								+ "JOIN utenti u on dv.tesseraid_id = :id ) s " + "WHERE scadenza",
 						DocumentoViaggio.class);
 		q.setParameter("id", UUID.fromString(id));
