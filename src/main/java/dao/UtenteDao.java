@@ -1,5 +1,6 @@
 package dao;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 
+import app.Application;
 import entities.Utente;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,7 +73,16 @@ public class UtenteDao {
 		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u FROM Utente u", Utente.class);
 		return getAllQuery.getResultList();
 	}
-
+	public List<Utente> findExpiredNow() {
+		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u, (datainizio + 365) < NOW()  AS scaduta FROM Utente u WHERE (datainizio + 365) < NOW()", Utente.class);
+		return getAllQuery.getResultList();
+	}
+	public List<Utente> findExpiredByDate(String Data) {
+		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u, (datainizio + 365) < :Data  AS scaduta FROM Utente u WHERE (datainizio + 365) < :Data", Utente.class);
+		getAllQuery.setParameter("Data", LocalDate.parse(Data, Application.dateFormatter));
+		return getAllQuery.getResultList();
+		
+	}
 }
 
 //select *, (datainizio + 365) < now()  as scaduta from utenti u where (datainizio + 365) < now();
