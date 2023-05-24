@@ -1,9 +1,11 @@
 package dao;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
@@ -19,24 +21,37 @@ public class DistributoreDao {
 		this.em = em;
 	}
 
+	public void createByList(List<Distributore> Distributori) throws HibernateException, ConstraintViolationException {
+		if (Distributori.size() > 0) {
+			Distributori.forEach(d -> create(d));
+		} else {
+			log.info("Lista ditributori vuota!");
+		}
+	}
+
 	public void create(Distributore d) throws HibernateException, ConstraintViolationException {
-		EntityTransaction transaction = em.getTransaction();
-		transaction.begin();
+		EntityTransaction t = em.getTransaction();
+		t.begin();
 		em.persist(d);
-		transaction.commit();
-
+		t.commit();
 		log.info("Distributore salvato!");
-
 	}
 
-	public Distributore getById(UUID id) throws HibernateException, ConstraintViolationException {
-
-		Distributore found = em.find(Distributore.class, id);
-		return found;
+	public void update(Distributore d) throws HibernateException, ConstraintViolationException {
+		Distributore found = em.find(Distributore.class, d);
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.merge(found);
+			transaction.commit();
+			log.info("Distributore: " + found + " aggiornato!");
+		} else {
+			log.info("Distributore: " + d + " non trovato!");
+		}
 	}
 
-	public void delete(UUID id) throws HibernateException, ConstraintViolationException {
-		Distributore found = em.find(Distributore.class, id);
+	public void delete(String id) throws HibernateException, ConstraintViolationException {
+		Distributore found = em.find(Distributore.class, UUID.fromString(id));
 		if (found != null) {
 			EntityTransaction transaction = em.getTransaction();
 			transaction.begin();
@@ -48,10 +63,13 @@ public class DistributoreDao {
 		}
 	}
 
-	public void update(Distributore d) throws HibernateException, ConstraintViolationException {
-		em.getTransaction().begin();
-		em.merge(d);
-		em.getTransaction().commit();
+	public Distributore findById(String id) throws HibernateException, ConstraintViolationException {
+		return em.find(Distributore.class, UUID.fromString(id));
+	}
+
+	public List<Distributore> findAll() throws HibernateException, ConstraintViolationException {
+		TypedQuery<Distributore> getAllQuery = em.createQuery("SELECT d FROM Distributore d", Distributore.class);
+		return getAllQuery.getResultList();
 	}
 
 }

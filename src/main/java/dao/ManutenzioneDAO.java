@@ -21,7 +21,15 @@ public class ManutenzioneDAO {
 		this.em = em;
 	}
 
-	public void createManutenzione(Manutenzione m) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<Manutenzione> Manutenzioni) throws HibernateException, ConstraintViolationException {
+		if (Manutenzioni.size() > 0) {
+			Manutenzioni.forEach(m -> create(m));
+		} else {
+			log.info("Lista manutenzioni vuota!");
+		}
+	}
+
+	public void create(Manutenzione m) throws HibernateException, ConstraintViolationException {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
 		em.persist(m);
@@ -29,23 +37,38 @@ public class ManutenzioneDAO {
 		log.info("Manutenzione salvata!");
 	}
 
-	public void updateManutenzione(Manutenzione m) throws HibernateException, ConstraintViolationException {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.merge(m);
-		t.commit();
-		log.info("Manutenzione aggiornata!");
+	public void update(Manutenzione m) throws HibernateException, ConstraintViolationException {
+		Manutenzione found = em.find(Manutenzione.class, m);
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.merge(found);
+			transaction.commit();
+			log.info("Manutenzione: " + found + " aggiornata!");
+		} else {
+			log.info("Manutenzione: " + m + " non trovata!");
+		}
+	}
+
+	public void delete(String id) throws HibernateException, ConstraintViolationException {
+		Manutenzione found = em.find(Manutenzione.class, UUID.fromString(id));
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.remove(found);
+			transaction.commit();
+			log.info("Manutenzione con id " + id + " eliminata!");
+		} else {
+			log.info("Manutenzione con id " + id + " non trovata!");
+		}
 	}
 
 	public Manutenzione findById(String id) throws HibernateException, ConstraintViolationException {
-		Manutenzione found = em.find(Manutenzione.class, UUID.fromString(id));
-		return found;
+		return em.find(Manutenzione.class, UUID.fromString(id));
 	}
 
 	public List<Manutenzione> findAll() throws HibernateException, ConstraintViolationException {
 		TypedQuery<Manutenzione> getAllQuery = em.createQuery("SELECT m FROM Manutenzione m", Manutenzione.class);
-		// SELECT * FROM Manutenzione
 		return getAllQuery.getResultList();
 	}
-
 }

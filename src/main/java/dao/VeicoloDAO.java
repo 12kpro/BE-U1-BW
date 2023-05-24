@@ -21,7 +21,15 @@ public class VeicoloDAO {
 		this.em = em;
 	}
 
-	public void createVeicolo(Veicolo v) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<Veicolo> veicoli) throws HibernateException, ConstraintViolationException {
+		if (veicoli.size() > 0) {
+			veicoli.forEach(v -> create(v));
+		} else {
+			log.info("Lista veicoli vuota!");
+		}
+	}
+
+	public void create(Veicolo v) throws HibernateException, ConstraintViolationException {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
 		em.persist(v);
@@ -29,30 +37,38 @@ public class VeicoloDAO {
 		log.info("Veicolo salvato!");
 	}
 
-	public void updateVeicolo(Veicolo v) throws HibernateException, ConstraintViolationException {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.merge(v);
-		t.commit();
-		log.info("Veicolo aggiornato!");
+	public void update(Veicolo v) throws HibernateException, ConstraintViolationException {
+		Veicolo found = em.find(Veicolo.class, v);
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.merge(found);
+			transaction.commit();
+			log.info("Veicolo: " + found + " aggiornato!");
+		} else {
+			log.info("Veicolo: " + v + " non trovato!");
+		}
 	}
 
-	public void deleteVeicolo(Veicolo v) throws HibernateException, ConstraintViolationException {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.remove(v);
-		t.commit();
-		log.info("Veicolo eliminato!");
+	public void delete(String id) throws HibernateException, ConstraintViolationException {
+		Veicolo found = em.find(Veicolo.class, UUID.fromString(id));
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.remove(found);
+			transaction.commit();
+			log.info("Veicolo con id " + id + " eliminato!");
+		} else {
+			log.info("Veicolo con id " + id + " non trovato!");
+		}
 	}
 
 	public Veicolo findById(String id) throws HibernateException, ConstraintViolationException {
-		Veicolo found = em.find(Veicolo.class, UUID.fromString(id));
-		return found;
+		return em.find(Veicolo.class, UUID.fromString(id));
 	}
 
 	public List<Veicolo> findAll() throws HibernateException, ConstraintViolationException {
 		TypedQuery<Veicolo> getAllQuery = em.createQuery("SELECT v FROM Veicolo v", Veicolo.class);
-		// SELECT * FROM Veicolo
 		return getAllQuery.getResultList();
 	}
 

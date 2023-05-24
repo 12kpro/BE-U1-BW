@@ -24,14 +24,13 @@ Occorre inoltre permettere la verifica rapida della validitå di un abbonamento 
 ```
 select * from (select *,
     CASE
-        WHEN dv.tipo = 'SETTIMANALE' THEN dv.dataemissione + 7 < now() 
+        WHEN dv.tipo = 'SETTIMANALE' THEN dv.dataemissione + 7 < now()
         WHEN dv.tipo = 'MENSILE' THEN dv.dataemissione + 30 < now()
     END AS scadenza
 from documenti_viaggio dv join utenti u on dv.tesseraid_id = u.id
 ) s
-where scadenza 
+where scadenza
 ```
-
 
 Documenti di viaggio
 
@@ -45,7 +44,10 @@ Abbonamenti
 - data_scadenza: calcolato data_emissione + 7 = scadenza -> query scadenza < now()
 - tipo [SETTIMANALE, MENSILE]
 
-Biglietti - data_vidimazione - veicolo_id
+Biglietti
+
+- data_vidimazione
+- veicolo_id
 
 Distributori
 id: UUID
@@ -68,10 +70,13 @@ una certa capienza in base al tipo di mezzo. Ogni mezzo pub essere in servizio o
 tenere traccia dei periodi di servizio o manutenzione di ogni mezzo.
 
 Conteggio per veiocolo
+
 ```
 select count(*) as totale  from documenti_viaggio dv where datavidimazione is not null and dv.veicoloid_id = '79df7151-ee6d-41fa-a9f4-d694fe9a7f45'
 ```
+
 Conteggio per periodo
+
 ```
 select count(*) as totale  from documenti_viaggio dv where datavidimazione is not null and dv.datavidimazione  BETWEEN '2023-04-01' AND '2023-04-30'
 ```
@@ -91,22 +96,27 @@ capolinea ed un tempo medio di percorrenza. Occorre tenere traccia del numero di
 una tappa e del tempo effettivo di percorrenza di ogni tratta.
 
 numero percorrenze per tratta per veicolo
+
 ```
-select trattaid_id,veicoloid_id , count(trattaid_id) as numero from percorrenze p 
-where oraarrivo is not null 
-group by trattaid_id, veicoloid_id   
+select trattaid_id,veicoloid_id , count(trattaid_id) as numero from percorrenze p
+where oraarrivo is not null
+group by trattaid_id, veicoloid_id
 ```
+
 tempo di percorrenza tratta per veicolo:
+
 ```
-select trattaid_id ,veicoloid_id , sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  as percorrenza from percorrenze p 
-where oraarrivo is not null 
-group by trattaid_id, veicoloid_id  
+select trattaid_id ,veicoloid_id , sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  as percorrenza from percorrenze p
+where oraarrivo is not null
+group by trattaid_id, veicoloid_id
 ```
+
 tempo di percorrenza medio per tratta
+
 ```
-select trattaid_id, sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))/count(trattaid_id)  as percorrenzamedia from percorrenze p 
-where oraarrivo is not null 
-group by trattaid_id 
+select trattaid_id, sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))/count(trattaid_id)  as percorrenzamedia from percorrenze p
+where oraarrivo is not null
+group by trattaid_id
 ```
 
 Tratte - id: UUID - partenza: - capolinea: - t_percorrenza_medio: calcolato in base alle percorrenze

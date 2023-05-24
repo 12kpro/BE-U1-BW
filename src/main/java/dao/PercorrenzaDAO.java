@@ -21,30 +21,54 @@ public class PercorrenzaDAO {
 		this.em = em;
 	}
 
-	public void createPercorrenza(Percorrenza p) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<Percorrenza> percorrenze) throws HibernateException, ConstraintViolationException {
+		if (percorrenze.size() > 0) {
+			percorrenze.forEach(p -> create(p));
+		} else {
+			log.info("Lista percorrenze vuota!");
+		}
+	}
+
+	public void create(Percorrenza p) throws HibernateException, ConstraintViolationException {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
 		em.persist(t);
 		t.commit();
-		log.info("Percorrenza effettuata!");
-	}
-
-	public void updateManutenzione(Percorrenza p) throws HibernateException, ConstraintViolationException {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.merge(t);
-		t.commit();
 		log.info("Percorrenza aggiornata!");
 	}
 
-	public Percorrenza findById(String id) throws HibernateException, ConstraintViolationException {
+	public void update(Percorrenza p) throws HibernateException, ConstraintViolationException {
+		Percorrenza found = em.find(Percorrenza.class, p);
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.merge(found);
+			transaction.commit();
+			log.info("Percorrenza: " + found + " aggiornata!");
+		} else {
+			log.info("Percorrenza: " + p + " non trovata!");
+		}
+	}
+
+	public void delete(String id) throws HibernateException, ConstraintViolationException {
 		Percorrenza found = em.find(Percorrenza.class, UUID.fromString(id));
-		return found;
+		if (found != null) {
+			EntityTransaction transaction = em.getTransaction();
+			transaction.begin();
+			em.remove(found);
+			transaction.commit();
+			log.info("Percorrenza con id " + id + " eliminata!");
+		} else {
+			log.info("Percorrenza con id " + id + " non trovata!");
+		}
+	}
+
+	public Percorrenza findById(String id) throws HibernateException, ConstraintViolationException {
+		return em.find(Percorrenza.class, UUID.fromString(id));
 	}
 
 	public List<Percorrenza> findAll() throws HibernateException, ConstraintViolationException {
 		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT p FROM Percorrenza p", Percorrenza.class);
-		// SELECT * FROM Percorrenza
 		return getAllQuery.getResultList();
 	}
 

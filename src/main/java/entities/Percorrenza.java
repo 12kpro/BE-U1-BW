@@ -25,7 +25,7 @@ public class Percorrenza {
 	@Column(nullable = false)
 	private LocalDateTime oraPartenza;
 	private LocalDateTime oraArrivo;
-	private long tempoPercorrenza; // Calcolato
+	// private long tempoPercorrenza; // Calcolato
 	@ManyToOne(optional = false)
 	private Veicolo veicoloId;
 	@ManyToOne(optional = false)
@@ -43,9 +43,8 @@ public class Percorrenza {
 
 	@Override
 	public String toString() {
-		return "Percorrenza [id=" + id + ", oraPartenza=" + oraPartenza + ", oraArrivo=" + oraArrivo
-				+ ", tempoPercorrenza=" + tempoPercorrenza + ", veicoloId=" + veicoloId + ", trattaId=" + trattaId
-				+ "]";
+		return "Percorrenza [id=" + id + ", oraPartenza=" + oraPartenza + ", oraArrivo=" + oraArrivo + ", veicoloId="
+				+ veicoloId + ", trattaId=" + trattaId + "]";
 	}
 
 }
