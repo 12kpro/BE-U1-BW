@@ -1,5 +1,6 @@
 package dao;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,8 +74,56 @@ public class DocumentoViaggioDao {
 		return getAllQuery.getResultList();
 	}
 
+	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(LocalDate di, LocalDate df, String id) {
+		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT tipo_documento,distributoreid_id , COUNT(*) as numero "
+				+ "FROM documenti_viaggio " + "WHERE dataEmissione BETWEEN dataInizio = :di AND dataFine = :df "
+				+ "GROUP BY tipo_documento, distributoreid_id = :id", DocumentoViaggio.class);
+		q.setParameter("di", di);
+		q.setParameter("df", df);
+		q.setParameter("id", UUID.fromString(id));
+
+		return q.getResultList();
+
+	}
+
+	public List<DocumentoViaggio> getAbbonamentiScaduti(String id) {
+		TypedQuery<DocumentoViaggio> q = em
+				.createQuery(
+						"SELECT * FROM (SELECT *, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
+								+ "THEN  dv.dataemissione + 7 < now() " + "WHEN dv.tipo = 'MENSILE' "
+								+ "THEN dv.dataemissione + 30 < now() END AS scadenza " + "FROM documenti_viaggio dv "
+								+ "JOIN utenti u on dv.tesseraid_id = :id ) s " + "WHERE scadenza",
+						DocumentoViaggio.class);
+		q.setParameter("id", UUID.fromString(id));
+
+		return q.getResultList();
+	}
+
+	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerVeicolo(String id) {
+		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale" + "FROM documenti_viaggio dv "
+				+ "WHERE datavidimazione IS NOT null AND dv.veicoloid_id = :id", DocumentoViaggio.class);
+		q.setParameter("id", UUID.fromString(id));
+		return q.getResultList();
+	}
+
+	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerPeriodo(LocalDate di, LocalDate df) {
+		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale " + "FROM documenti_viaggio dv "
+				+ "WHERE datavidimazione IS NOT null AND dv.datavidimazione BETWEEN dataInizio= :di AND dataFine= :df",
+				DocumentoViaggio.class);
+		q.setParameter("di", di);
+		q.setParameter("df", df);
+		return q.getResultList();
+
+	}
+
 }
 /*
+ * public List<Prestito> findByTesseraUtente(String t) { Query q = em.
+ * createQuery("SELECT p FROM Prestito p JOIN Utente u on p.utente=u.id WHERE u.numeroTessera = :t"
+ * ); q.setParameter("t", UUID.fromString(t)); return q.getResultList(); }
+ * 
+ * 
+ * 
  * select tipo_documento,distributoreid_id , count(*) as numero from
  * documenti_viaggio where dataemissione BETWEEN '2023-04-01' AND '2023-05-31'
  * group by tipo_documento, distributoreid_id

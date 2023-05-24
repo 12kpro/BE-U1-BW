@@ -1,5 +1,6 @@
 package entities;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +25,7 @@ import utils.TipoVeicolo;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Veicolo {
+public class Veicolo implements Serializable {
 	@Id
 	private UUID id = UUID.randomUUID();
 	@Enumerated(EnumType.STRING)
@@ -32,7 +33,7 @@ public class Veicolo {
 	private TipoVeicolo tipoVeicolo;
 	private Integer capienza;
 	@Column(nullable = false)
-	private boolean inServizio;
+	private boolean inServizio = false;
 	@ManyToOne
 	private Tratta trattaId;
 
@@ -41,11 +42,9 @@ public class Veicolo {
 	@OneToMany(mappedBy = "veicoloId", cascade = CascadeType.ALL)
 	private List<Manutenzione> manutenzioni;
 
-	public Veicolo(TipoVeicolo tipoVeicolo, boolean inServizio, Tratta trattaId) {
+	public Veicolo(TipoVeicolo tipoVeicolo) {
 		super();
 		this.tipoVeicolo = tipoVeicolo;
-		this.inServizio = inServizio;
-		this.trattaId = trattaId;
 	}
 
 	@PrePersist

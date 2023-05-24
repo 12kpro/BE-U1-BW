@@ -1,6 +1,6 @@
 package entities;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -23,15 +23,15 @@ public class Manutenzione {
 	@Id
 	private UUID id = UUID.randomUUID();
 	@Column(nullable = false)
-	private LocalDate data_inizio;
-	private LocalDate data_fine;
+	private LocalDateTime data_inizio;
+	private LocalDateTime data_fine;
 	@ManyToOne(optional = false)
 	private Veicolo veicoloId;
 
 	public Manutenzione(String data_inizio, String data_fine, Veicolo veicolo) {
 		super();
-		this.data_inizio = LocalDate.parse(data_inizio, Application.dateFormatter);
-		this.data_fine = LocalDate.parse(data_fine, Application.dateFormatter);
+		this.data_inizio = LocalDateTime.parse(data_inizio, Application.dateTimeFormatter);
+		this.data_fine = LocalDateTime.parse(data_fine, Application.dateTimeFormatter);
 		this.veicoloId = veicolo;
 	}
 

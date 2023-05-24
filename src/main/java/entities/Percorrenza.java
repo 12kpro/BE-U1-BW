@@ -32,8 +32,8 @@ public class Percorrenza {
 	private Tratta trattaId;
 
 	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicoloId, Tratta trattaId) {
-		this.oraPartenza = LocalDateTime.parse(oraPartenza, Application.dateFormatter);
-		this.oraArrivo = LocalDateTime.parse(oraArrivo, Application.dateFormatter);
+		this.oraPartenza = LocalDateTime.parse(oraPartenza, Application.dateTimeFormatter);
+		this.oraArrivo = LocalDateTime.parse(oraArrivo, Application.dateTimeFormatter);
 		this.veicoloId = veicoloId;
 		this.trattaId = trattaId;
 		/// this.tempoPercorrenza = ChronoUnit.SECONDS.between(this.oraArrivo,
