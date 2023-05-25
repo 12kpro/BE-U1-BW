@@ -54,8 +54,8 @@ public class Percorrenza {
 
 	@Override
 	public String toString() {
-		return "Percorrenza [id=" + id + ", oraPartenza=" + oraPartenza + ", oraArrivo=" + oraArrivo + ", veicoloId="
-				+ veicolo + ", trattaId=" + tratta + "]";
+		return "Percorrenza [id=" + id + ", oraPartenza=" + oraPartenza + ", oraArrivo=" + oraArrivo + ", veicolo="
+				+ veicolo + ", tratta=" + tratta + ", tempopercorrenza=" + tempopercorrenza + "]";
 	}
 
 }
