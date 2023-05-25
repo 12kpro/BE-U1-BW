@@ -31,7 +31,7 @@ public class Distributore {
 	private String indirizzo;
 	@Column(nullable = false)
 	private Boolean attivo;
-	@OneToMany(mappedBy = "distributoreId")
+	@OneToMany(mappedBy = "distributore")
 	private List<DocumentoViaggio> documentiViaggio;
 
 	public Distributore(TipoDistributore tipo, String nome, String indirizzo, Boolean attivo) {

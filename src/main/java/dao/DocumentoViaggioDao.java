@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.HibernateException;
@@ -22,7 +23,7 @@ public class DocumentoViaggioDao {
 		this.em = em;
 	}
 
-	public void createByList(List<DocumentoViaggio> Documenti) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<DocumentoViaggio> Documenti) throws PersistenceException {
 		if (Documenti.size() > 0) {
 			Documenti.forEach(d -> create(d));
 		} else {
@@ -30,41 +31,59 @@ public class DocumentoViaggioDao {
 		}
 	}
 
-	public void create(DocumentoViaggio d) throws HibernateException, ConstraintViolationException {
+	public void create(DocumentoViaggio d) throws PersistenceException {
 		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.persist(d);
-		t.commit();
-		log.info("DocumentoViaggio salvato!");
+		try {
+			t.begin();
+			em.persist(d);
+			t.commit();
+			log.info("DocumentoViaggio salvato!");
+		} catch (Exception e) {
+			if (t != null)
+				t.rollback();
+			throw e;
+		}
 	}
 
-	public void update(DocumentoViaggio d) throws HibernateException, ConstraintViolationException {
+	public void update(DocumentoViaggio d) throws PersistenceException {
 		DocumentoViaggio found = em.find(DocumentoViaggio.class, d);
 		if (found != null) {
-			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.merge(found);
-			transaction.commit();
-			log.info("DocumentoViaggio: " + found + " aggiornato!");
+			EntityTransaction t = em.getTransaction();
+			try {
+				t.begin();
+				em.merge(found);
+				t.commit();
+				log.info("DocumentoViaggio: " + found + " aggiornato!");
+			} catch (Exception e) {
+				if (t != null)
+					t.rollback();
+				throw e;
+			}
 		} else {
 			log.info("DocumentoViaggio: " + d + " non trovato!");
 		}
 	}
 
-	public void delete(String id) throws HibernateException, ConstraintViolationException {
+	public void delete(String id) throws PersistenceException {
 		DocumentoViaggio found = em.find(DocumentoViaggio.class, UUID.fromString(id));
 		if (found != null) {
-			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.remove(found);
-			transaction.commit();
-			log.info("DocumentoViaggio con id " + id + " eliminato!");
+			EntityTransaction t = em.getTransaction();
+			try {
+				t.begin();
+				em.remove(found);
+				t.commit();
+				log.info("DocumentoViaggio con id " + id + " eliminato!");
+			} catch (Exception e) {
+				if (t != null)
+					t.rollback();
+				throw e;
+			}
 		} else {
 			log.info("DocumentoViaggio con id " + id + " non trovato!");
 		}
 	}
 
-	public DocumentoViaggio findById(String id) throws HibernateException, ConstraintViolationException {
+	public DocumentoViaggio findById(String id) throws PersistenceException {
 		return em.find(DocumentoViaggio.class, UUID.fromString(id));
 	}
 
@@ -74,7 +93,8 @@ public class DocumentoViaggioDao {
 		return getAllQuery.getResultList();
 	}
 
-	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(LocalDate di, LocalDate df, String id) {
+	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(LocalDate di, LocalDate df, String id)
+			throws PersistenceException {
 		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT tipo_documento,distributoreid_id , COUNT(*) as numero "
 				+ "FROM documenti_viaggio " + "WHERE dataEmissione BETWEEN dataInizio = :di AND dataFine = :df "
 				+ "GROUP BY tipo_documento, distributoreid_id = :id", DocumentoViaggio.class);
@@ -86,7 +106,7 @@ public class DocumentoViaggioDao {
 
 	}
 
-	public List<DocumentoViaggio> getAbbonamentiScaduti(String id) {
+	public List<DocumentoViaggio> getAbbonamentiScaduti(String id) throws PersistenceException {
 		TypedQuery<DocumentoViaggio> q = em
 				.createQuery(
 						"SELECT * FROM (SELECT *, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
@@ -99,14 +119,15 @@ public class DocumentoViaggioDao {
 		return q.getResultList();
 	}
 
-	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerVeicolo(String id) {
+	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerVeicolo(String id) throws PersistenceException {
 		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale" + "FROM documenti_viaggio dv "
 				+ "WHERE datavidimazione IS NOT null AND dv.veicoloid_id = :id", DocumentoViaggio.class);
 		q.setParameter("id", UUID.fromString(id));
 		return q.getResultList();
 	}
 
-	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerPeriodo(LocalDate di, LocalDate df) {
+	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerPeriodo(LocalDate di, LocalDate df)
+			throws PersistenceException {
 		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale " + "FROM documenti_viaggio dv "
 				+ "WHERE datavidimazione IS NOT null AND dv.datavidimazione BETWEEN dataInizio= :di AND dataFine= :df",
 				DocumentoViaggio.class);

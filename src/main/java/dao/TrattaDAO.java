@@ -29,20 +29,32 @@ public class TrattaDAO {
 
 	public void create(Tratta tr) throws PersistenceException {
 		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.persist(tr);
-		t.commit();
-		log.info("Tratta inserita!");
+		try {
+			t.begin();
+			em.persist(tr);
+			t.commit();
+			log.info("Tratta inserita!");
+		} catch (Exception e) {
+			if (t != null)
+				t.rollback();
+			throw e;
+		}
 	}
 
 	public void update(Tratta tr) throws PersistenceException {
 		Tratta found = em.find(Tratta.class, tr);
 		if (found != null) {
-			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.merge(found);
-			transaction.commit();
-			log.info("Tratta: " + found + " aggiornata!");
+			EntityTransaction t = em.getTransaction();
+			try {
+				t.begin();
+				em.merge(found);
+				t.commit();
+				log.info("Tratta: " + found + " aggiornata!");
+			} catch (Exception e) {
+				if (t != null)
+					t.rollback();
+				throw e;
+			}
 		} else {
 			log.info("Tratta: " + tr + " non trovata!");
 		}

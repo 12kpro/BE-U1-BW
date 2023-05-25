@@ -35,11 +35,11 @@ public class Veicolo implements Serializable {
 	@Column(nullable = false)
 	private boolean inServizio = false;
 	@ManyToOne
-	private Tratta trattaId;
+	private Tratta tratta;
 
-	@OneToMany(mappedBy = "veicoloId")
+	@OneToMany(mappedBy = "veicolo")
 	private List<Percorrenza> percorrenze;
-	@OneToMany(mappedBy = "veicoloId", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "veicolo", cascade = CascadeType.ALL)
 	private List<Manutenzione> manutenzioni;
 
 	public Veicolo(TipoVeicolo tipoVeicolo) {
@@ -59,7 +59,7 @@ public class Veicolo implements Serializable {
 	@Override
 	public String toString() {
 		return "Veicolo [id=" + id + ", tipoVeicolo=" + tipoVeicolo + ", capienza=" + capienza + ", inServizio="
-				+ inServizio + ", trattaId=" + trattaId + "]";
+				+ inServizio + ", trattaId=" + tratta + "]";
 	}
 
 }

@@ -84,12 +84,12 @@ public class Application {
 
 			vd.createByList(veicoli);
 			veicoli.get(0).setInServizio(true);
-			veicoli.get(0).setTrattaId(tratte.get(0));
+			veicoli.get(0).setTratta(tratte.get(0));
 			vd.update(veicoli.get(0));
 
 			vd.createByList(veicoli);
 			veicoli.get(3).setInServizio(true);
-			veicoli.get(3).setTrattaId(tratte.get(2));
+			veicoli.get(3).setTratta(tratte.get(2));
 			vd.update(veicoli.get(3));
 
 			DocumentoViaggio documento1 = new Abbonamento("18-05-2023", distributori.get(0),
@@ -114,15 +114,15 @@ public class Application {
 			dvd.createByList(documenti);
 
 			documento3.setDataVidimazione("24-05-2023");
-			documento3.setVeicoloId(veicoli.get(3));
+			documento3.setVeicolo(veicoli.get(3));
 			bd.update(documento3);
 
 			documento4.setDataVidimazione("16-04-2023");
-			documento4.setVeicoloId(veicoli.get(2));
+			documento4.setVeicolo(veicoli.get(2));
 			bd.update(documento4);
 
 			documento5.setDataVidimazione("22-03-2023");
-			documento5.setVeicoloId(veicoli.get(3));
+			documento5.setVeicolo(veicoli.get(3));
 			bd.update(documento5);
 
 			List<Manutenzione> manutenzioni = new ArrayList<Manutenzione>();

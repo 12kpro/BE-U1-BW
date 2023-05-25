@@ -18,10 +18,10 @@ import lombok.Setter;
 public class Biglietto extends DocumentoViaggio implements Serializable {
 	private LocalDate dataVidimazione;
 	@ManyToOne
-	private Veicolo veicoloId;
+	private Veicolo veicolo;
 
-	public Biglietto(String dataEmissione, Distributore distributoreId) {
-		super(dataEmissione, distributoreId);
+	public Biglietto(String dataEmissione, Distributore distributore) {
+		super(dataEmissione, distributore);
 	}
 
 	public void setDataVidimazione(String data) {
@@ -31,7 +31,7 @@ public class Biglietto extends DocumentoViaggio implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Biglietto [dataVidimazione=" + dataVidimazione + ", veicolo_id=" + veicoloId + "]";
+		return "Biglietto [dataVidimazione=" + dataVidimazione + ", veicolo_id=" + veicolo + "]";
 	}
 
 }

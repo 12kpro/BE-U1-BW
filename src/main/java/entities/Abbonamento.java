@@ -20,12 +20,12 @@ public class Abbonamento extends DocumentoViaggio {
 	private TipoAbbonamento tipo;
 	// private LocalDate dataScadenza; // calcolato?
 	@ManyToOne
-	private Utente tesseraId;
+	private Utente tessera;
 
-	public Abbonamento(String dataEmissione, Distributore distributoreId, TipoAbbonamento tipo, Utente tesseraId) {
+	public Abbonamento(String dataEmissione, Distributore distributoreId, TipoAbbonamento tipo, Utente tessera) {
 		super(dataEmissione, distributoreId);
 		this.tipo = tipo;
-		this.tesseraId = tesseraId;
+		this.tessera = tessera;
 	}
 
 	/*
@@ -36,7 +36,7 @@ public class Abbonamento extends DocumentoViaggio {
 	 */
 	@Override
 	public String toString() {
-		return "Abbonamento [tipo=" + tipo + ", tessera_id=" + tesseraId + "]";
+		return "Abbonamento [tipo=" + tipo + ", tessera_id=" + tessera + "]";
 	}
 
 }
