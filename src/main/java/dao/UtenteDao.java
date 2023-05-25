@@ -79,10 +79,9 @@ public class UtenteDao {
 	}
 
 	public List<Utente> findExpiredByDate(String d) {
-
-		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u FROM Utente u WHERE (datainizio + 365) < :data",
-				Utente.class);
-		getAllQuery.setParameter()
+		TypedQuery<Utente> getAllQuery = em.createQuery(
+				"SELECT u FROM Utente u WHERE (datainizio + 365) < to_date(:data,'dd-mm-yyyy')", Utente.class);
+		getAllQuery.setParameter("data", d);
 		return getAllQuery.getResultList();
 
 	}
