@@ -42,10 +42,18 @@ public class Prompt {
 
 	private static EntityManagerFactory emf = JpaUtil.getEntityManagerFactory();
 	private static EntityManager em = emf.createEntityManager();
+	private static VeicoloDAO vd = new VeicoloDAO(em);
+	private static UtenteDao ud = new UtenteDao(em);
+	private static TrattaDAO td = new TrattaDAO(em);
+	private static PercorrenzaDAO pd = new PercorrenzaDAO(em);
+	private static ManutenzioneDAO md = new ManutenzioneDAO(em);
+	private static DocumentoViaggioDao dvd = new DocumentoViaggioDao(em);
+	private static DistributoreDao dd = new DistributoreDao(em);
+	private static BigliettoDao bd = new BigliettoDao(em);
 
 	public static void main(String[] args) {
 
-		String options[] = { "0: Per Uscire", "1: Aggiungi/Aggiorna libro", "2: Aggiungi/Aggiorna Rivista",
+		String options[] = { "0: Per Uscire", "1: Esegui ricerche", "2: Aggiungi/Aggiorna Rivista",
 				"3: Salva Archivio su disco", "4: Leggi Archivio da disco", "5: Cerca per ISBN", "6: Cerca per Autore",
 				"7: Cerca per anno pubblicazione", "8: Rimuovi pubblicazione per ISBN", "9: Carica dati di esempio" };
 
@@ -59,7 +67,7 @@ public class Prompt {
 					input.close();
 					break choice;
 				case 1:
-					test();
+					ricerche();
 					break;
 				case 2:
 
@@ -93,9 +101,8 @@ public class Prompt {
 				log.info("Devi inserire un numero intero positivo!!");
 			} catch (PersistenceException e) {
 				log.error("Errore durante la lettura/scrittura {}", e.getMessage());
-			} finally {
-				em.close();
 			}
+			// em.close();
 		}
 	}
 
@@ -116,15 +123,6 @@ public class Prompt {
 				t.rollback();
 			throw e;
 		}
-
-		VeicoloDAO vd = new VeicoloDAO(em);
-		UtenteDao ud = new UtenteDao(em);
-		TrattaDAO td = new TrattaDAO(em);
-		PercorrenzaDAO pd = new PercorrenzaDAO(em);
-		ManutenzioneDAO md = new ManutenzioneDAO(em);
-		DocumentoViaggioDao dvd = new DocumentoViaggioDao(em);
-		DistributoreDao dd = new DistributoreDao(em);
-		BigliettoDao bd = new BigliettoDao(em);
 
 		List<Utente> utenti = new ArrayList<Utente>();
 		utenti.add(new Utente("Vittoria", "Basile", "22-05-2022"));
@@ -214,30 +212,37 @@ public class Prompt {
 		pd.createByList(percorrenze);
 	}
 
-	public static void test() {
-		String periodicitaOpt[] = { "0: SETTIMANALE ", "1: MENSILE", "2 SEMESTRALE" };
-		System.out.print("Inserisci ISBN:");
-		Long codice = Math.abs(Long.parseLong(input.nextLine()));
-		System.out.print("Inserisci titolo:");
-		String titolo = input.nextLine();
-		System.out.print("Inserisci Anno Pubblicazione:");
-		Integer annoPubblicazione = Math.abs(Integer.parseInt(input.nextLine()));
-		System.out.print("Inserisci Numero Pagine:");
-		Integer numPagine = Math.abs(Integer.parseInt(input.nextLine()));
-		System.out.print("Inserisci Periodicità:");
-		periodicitaLoop: while (true) {
-			System.out.println(Arrays.asList(periodicitaOpt));
-			int periodicitaSel = Math.abs(Integer.parseInt(input.nextLine()));
+	public static void ricerche() {
+		String ricercheOpt[] = { "0: Esci ", "1: Visualizza tutte le tessere scadute",
+				"2 Visualizza tutte le tessere scadute per data" };
+//		System.out.print("Inserisci ISBN:");
+//		Long codice = Math.abs(Long.parseLong(input.nextLine()));
+//		System.out.print("Inserisci titolo:");
+//		String titolo = input.nextLine();
+//		System.out.print("Inserisci Anno Pubblicazione:");
+//		Integer annoPubblicazione = Math.abs(Integer.parseInt(input.nextLine()));
+//		System.out.print("Inserisci Numero Pagine:");
+//		Integer numPagine = Math.abs(Integer.parseInt(input.nextLine()));
+//		System.out.print("Inserisci Periodicità:");
+		ricercheLoop: while (true) {
+			System.out.println(Arrays.asList(ricercheOpt));
+			int ricercheSel = Math.abs(Integer.parseInt(input.nextLine()));
 
-			switch (periodicitaSel) {
+			switch (ricercheSel) {
 			case 0:
-				break periodicitaLoop;
+				break ricercheLoop;
 			case 1:
-				break periodicitaLoop;
+				for (Utente result : ud.findExpiredNow()) {
+					log.info(result.toString());
+				}
+				break;
 			case 2:
-				break periodicitaLoop;
+				for (Utente result : ud.findExpiredByDate(input.nextLine())) {
+					log.info(result.toString());
+				}
+				break;
 			default:
-				System.out.println("L'opzione inserita " + periodicitaSel + " non è valida!");
+				log.info("L'opzione inserita " + ricercheSel + " non è valida!");
 				break;
 			}
 		}
