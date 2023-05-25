@@ -5,10 +5,8 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-
-import org.hibernate.HibernateException;
-import org.hibernate.exception.ConstraintViolationException;
 
 import entities.Tratta;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,7 @@ public class TrattaDAO {
 		this.em = em;
 	}
 
-	public void createByList(List<Tratta> tratte) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<Tratta> tratte) throws PersistenceException {
 		if (tratte.size() > 0) {
 			tratte.forEach(tr -> create(tr));
 		} else {
@@ -29,7 +27,7 @@ public class TrattaDAO {
 		}
 	}
 
-	public void create(Tratta tr) throws HibernateException, ConstraintViolationException {
+	public void create(Tratta tr) throws PersistenceException {
 		EntityTransaction t = em.getTransaction();
 		t.begin();
 		em.persist(tr);
@@ -37,7 +35,7 @@ public class TrattaDAO {
 		log.info("Tratta inserita!");
 	}
 
-	public void update(Tratta tr) throws HibernateException, ConstraintViolationException {
+	public void update(Tratta tr) throws PersistenceException {
 		Tratta found = em.find(Tratta.class, tr);
 		if (found != null) {
 			EntityTransaction transaction = em.getTransaction();
@@ -50,24 +48,30 @@ public class TrattaDAO {
 		}
 	}
 
-	public void delete(String id) throws HibernateException, ConstraintViolationException {
+	public void delete(String id) throws PersistenceException {
 		Tratta found = em.find(Tratta.class, UUID.fromString(id));
 		if (found != null) {
-			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.remove(found);
-			transaction.commit();
-			log.info("Tratta con id " + id + " eliminata!");
+			EntityTransaction t = em.getTransaction();
+			try {
+				t.begin();
+				em.remove(found);
+				t.commit();
+				log.info("Tratta con id " + id + " eliminata!");
+			} catch (Exception e) {
+				if (t != null)
+					t.rollback();
+				throw e;
+			}
 		} else {
 			log.info("Tratta con id " + id + " non trovata!");
 		}
 	}
 
-	public Tratta findById(String id) throws HibernateException, ConstraintViolationException {
+	public Tratta findById(String id) throws PersistenceException {
 		return em.find(Tratta.class, UUID.fromString(id));
 	}
 
-	public List<Tratta> findAll() throws HibernateException, ConstraintViolationException {
+	public List<Tratta> findAll() throws PersistenceException {
 		TypedQuery<Tratta> getAllQuery = em.createQuery("SELECT tr FROM Tratta tr", Tratta.class);
 		return getAllQuery.getResultList();
 	}

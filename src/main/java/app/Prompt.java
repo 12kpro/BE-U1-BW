@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 
 import dao.BigliettoDao;
@@ -99,13 +100,22 @@ public class Prompt {
 	}
 
 	public static void loadExampleData() {
-		em.createQuery("DELETE FROM DocumentoViaggio").executeUpdate();
-		// em.createQuery("DELETE FROM Percorrenza").executeUpdate();
-		// em.createQuery("DELETE FROM Manutenzione").executeUpdate();
-		// em.createQuery("DELETE FROM Distributore").executeUpdate();
-		// em.createQuery("DELETE FROM Tratta").executeUpdate();
-		// em.createQuery("DELETE FROM Utente").executeUpdate();
-		// em.createQuery("DELETE FROM Veicolo").executeUpdate();
+		EntityTransaction t = em.getTransaction();
+		try {
+			t.begin();
+			em.createQuery("DELETE FROM DocumentoViaggio").executeUpdate();
+			em.createQuery("DELETE FROM Percorrenza").executeUpdate();
+			em.createQuery("DELETE FROM Manutenzione").executeUpdate();
+			em.createQuery("DELETE FROM Distributore").executeUpdate();
+			em.createQuery("DELETE FROM Veicolo").executeUpdate();
+			em.createQuery("DELETE FROM Tratta").executeUpdate();
+			em.createQuery("DELETE FROM Utente").executeUpdate();
+			t.commit();
+		} catch (Exception e) {
+			if (t != null)
+				t.rollback();
+			throw e;
+		}
 
 		VeicoloDAO vd = new VeicoloDAO(em);
 		UtenteDao ud = new UtenteDao(em);
