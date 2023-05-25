@@ -27,7 +27,7 @@ public class Tratta {
 	@Column(nullable = false)
 	private String capolinea;
 	// private double tempoPercorrenzaMedio; // da rimuovere e usare un metodo?
-	@OneToMany(mappedBy = "trattaId", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "tratta", cascade = CascadeType.ALL)
 	private List<Percorrenza> percorrenze;
 
 	public Tratta(String partenza, String capolinea) {

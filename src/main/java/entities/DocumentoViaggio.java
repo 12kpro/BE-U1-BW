@@ -30,12 +30,12 @@ public abstract class DocumentoViaggio {
 	@Column(nullable = false)
 	protected LocalDate dataEmissione;
 	@ManyToOne(optional = false)
-	private Distributore distributoreId;
+	private Distributore distributore;
 
-	public DocumentoViaggio(String dataEmissione, Distributore distributoreId) {
+	public DocumentoViaggio(String dataEmissione, Distributore distributore) {
 		super();
 		this.dataEmissione = LocalDate.parse(dataEmissione, Application.dateFormatter);
-		this.distributoreId = distributoreId;
+		this.distributore = distributore;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.HibernateException;
@@ -21,7 +22,7 @@ public class BigliettoDao {
 		this.em = em;
 	}
 
-	public void createByList(List<Biglietto> Biglietti) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<Biglietto> Biglietti) throws PersistenceException {
 		if (Biglietti.size() > 0) {
 			Biglietti.forEach(b -> create(b));
 		} else {
@@ -29,41 +30,59 @@ public class BigliettoDao {
 		}
 	}
 
-	public void create(Biglietto b) throws HibernateException, ConstraintViolationException {
-		EntityTransaction t = em.getTransaction();
-		t.begin();
-		em.persist(b);
-		t.commit();
-		log.info("Biglietto salvata!");
+	public void create(Biglietto b) throws PersistenceException {
+		EntityTransaction transaction = em.getTransaction();
+		try {
+			transaction.begin();
+			em.persist(b);
+			transaction.commit();
+			log.info("Biglietto salvata!");
+		} catch (Exception e) {
+			if (transaction != null)
+				transaction.rollback();
+			throw e;
+		}
 	}
 
-	public void update(Biglietto b) throws HibernateException, ConstraintViolationException {
+	public void update(Biglietto b) throws PersistenceException {
 		Biglietto found = em.find(Biglietto.class, b.getId());
 		if (found != null) {
 			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.merge(found);
-			transaction.commit();
-			log.info("Biglietto: " + found + " aggiornata!");
+			try {
+				transaction.begin();
+				em.merge(found);
+				transaction.commit();
+				log.info("Biglietto: " + found + " aggiornata!");
+			} catch (Exception e) {
+				if (transaction != null)
+					transaction.rollback();
+				throw e;
+			}
 		} else {
 			log.info("Biglietto: " + b + " non trovata!");
 		}
 	}
 
-	public void delete(String id) throws HibernateException, ConstraintViolationException {
+	public void delete(String id) throws PersistenceException {
 		Biglietto found = em.find(Biglietto.class, UUID.fromString(id));
 		if (found != null) {
 			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.remove(found);
-			transaction.commit();
-			log.info("Biglietto con id " + id + " eliminata!");
+			try {
+				transaction.begin();
+				em.remove(found);
+				transaction.commit();
+				log.info("Biglietto con id " + id + " eliminata!");
+			} catch (Exception e) {
+				if (transaction != null)
+					transaction.rollback();
+				throw e;
+			}
 		} else {
 			log.info("Biglietto con id " + id + " non trovata!");
 		}
 	}
 
-	public Biglietto findById(String id) throws HibernateException, ConstraintViolationException {
+	public Biglietto findById(String id) throws PersistenceException {
 		return em.find(Biglietto.class, UUID.fromString(id));
 	}
 

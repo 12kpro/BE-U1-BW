@@ -27,15 +27,15 @@ public class Percorrenza {
 	private LocalDateTime oraArrivo;
 	// private long tempoPercorrenza; // Calcolato
 	@ManyToOne(optional = false)
-	private Veicolo veicoloId;
+	private Veicolo veicolo;
 	@ManyToOne(optional = false)
-	private Tratta trattaId;
+	private Tratta tratta;
 
-	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicoloId, Tratta trattaId) {
+	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicolo, Tratta tratta) {
 		this.oraPartenza = LocalDateTime.parse(oraPartenza, Application.dateTimeFormatter);
 		this.oraArrivo = LocalDateTime.parse(oraArrivo, Application.dateTimeFormatter);
-		this.veicoloId = veicoloId;
-		this.trattaId = trattaId;
+		this.veicolo = veicolo;
+		this.tratta = tratta;
 		/// this.tempoPercorrenza = ChronoUnit.SECONDS.between(this.oraArrivo,
 		/// this.oraPartenza);
 
@@ -44,7 +44,7 @@ public class Percorrenza {
 	@Override
 	public String toString() {
 		return "Percorrenza [id=" + id + ", oraPartenza=" + oraPartenza + ", oraArrivo=" + oraArrivo + ", veicoloId="
-				+ veicoloId + ", trattaId=" + trattaId + "]";
+				+ veicolo + ", trattaId=" + tratta + "]";
 	}
 
 }

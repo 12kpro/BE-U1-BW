@@ -6,10 +6,8 @@ import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
-
-import org.hibernate.HibernateException;
-import org.hibernate.exception.ConstraintViolationException;
 
 import app.Application;
 import entities.Utente;
@@ -23,7 +21,7 @@ public class UtenteDao {
 		this.em = em;
 	}
 
-	public void createByList(List<Utente> utenti) throws HibernateException, ConstraintViolationException {
+	public void createByList(List<Utente> utenti) throws PersistenceException {
 		if (utenti.size() > 0) {
 			utenti.forEach(u -> create(u));
 		} else {
@@ -31,57 +29,81 @@ public class UtenteDao {
 		}
 	}
 
-	public void create(Utente u) throws HibernateException, ConstraintViolationException {
-		EntityTransaction transaction = em.getTransaction();
-		transaction.begin();
-		em.persist(u);
-		transaction.commit();
-		log.info("Utente salvato!");
+	public void create(Utente u) throws PersistenceException {
+		EntityTransaction t = em.getTransaction();
+		try {
+			t.begin();
+			em.persist(u);
+			t.commit();
+			log.info("Utente salvato!");
+		} catch (Exception e) {
+			if (t != null)
+				t.rollback();
+			throw e;
+		}
 	}
 
-	public void delete(String id) throws HibernateException, ConstraintViolationException {
+	public void delete(String id) throws PersistenceException {
 		Utente found = em.find(Utente.class, UUID.fromString(id));
 		if (found != null) {
-			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.remove(found);
-			transaction.commit();
-			log.info("Utente con id " + id + " eliminato!");
+			EntityTransaction t = em.getTransaction();
+			try {
+				t.begin();
+				em.remove(found);
+				t.commit();
+				log.info("Utente con id " + id + " eliminato!");
+			} catch (Exception e) {
+				if (t != null)
+					t.rollback();
+				throw e;
+			}
 		} else {
 			log.info("Utente con id " + id + " non trovato!");
 		}
 	}
 
-	public void update(Utente u) throws HibernateException, ConstraintViolationException {
+	public void update(Utente u) throws PersistenceException {
 		Utente found = em.find(Utente.class, u);
 		if (found != null) {
-			EntityTransaction transaction = em.getTransaction();
-			transaction.begin();
-			em.merge(found);
-			transaction.commit();
-			log.info("Utente: " + found + " eliminato!");
+			EntityTransaction t = em.getTransaction();
+			try {
+				t.begin();
+				em.merge(found);
+				t.commit();
+				log.info("Utente: " + found + " eliminato!");
+			} catch (Exception e) {
+				if (t != null)
+					t.rollback();
+				throw e;
+			}
 		} else {
 			log.info("Utente: " + u + " non trovato!");
 		}
 	}
 
-	public Utente findById(String id) throws HibernateException, ConstraintViolationException {
+	public Utente findById(String id) throws PersistenceException {
 		return em.find(Utente.class, UUID.fromString(id));
 	}
 
-	public List<Utente> findAll() throws HibernateException, ConstraintViolationException {
+	public List<Utente> findAll() throws PersistenceException {
 		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u FROM Utente u", Utente.class);
 		return getAllQuery.getResultList();
 	}
-	public List<Utente> findExpiredNow() {
-		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u, (datainizio + 365) < NOW()  AS scaduta FROM Utente u WHERE (datainizio + 365) < NOW()", Utente.class);
+
+	public List<Utente> findExpiredNow() throws PersistenceException {
+		TypedQuery<Utente> getAllQuery = em.createQuery(
+				"SELECT u, (datainizio + 365) < NOW()  AS scaduta FROM Utente u WHERE (datainizio + 365) < NOW()",
+				Utente.class);
 		return getAllQuery.getResultList();
 	}
-	public List<Utente> findExpiredByDate(String Data) {
-		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u, (datainizio + 365) < :Data  AS scaduta FROM Utente u WHERE (datainizio + 365) < :Data", Utente.class);
+
+	public List<Utente> findExpiredByDate(String Data) throws PersistenceException {
+		TypedQuery<Utente> getAllQuery = em.createQuery(
+				"SELECT u, (datainizio + 365) < :Data  AS scaduta FROM Utente u WHERE (datainizio + 365) < :Data",
+				Utente.class);
 		getAllQuery.setParameter("Data", LocalDate.parse(Data, Application.dateFormatter));
 		return getAllQuery.getResultList();
-		
+
 	}
 }
 
