@@ -118,5 +118,21 @@ public class PercorrenzaDAO {
 
 		log.info(q.getResultList().toString());
 
+		/*
+		 * public List<Percorrenza> getTempoPercorrenzaPerVeicolo() { String sql =
+		 * "SELECT id, oraarrivo, orapartenza, tratta_id, veicolo_id, " +
+		 * "EXTRACT(EPOCH FROM (oraarrivo - orapartenza)) AS tempopercorrenza " +
+		 * "FROM percorrenze WHERE oraarrivo IS NOT NULL " +
+		 * "GROUP BY id, oraarrivo, orapartenza, tratta_id, veicolo_id"; Query q =
+		 * em.createNativeQuery(sql, Percorrenza.class); List<Percorrenza> resultList =
+		 * q.getResultList();
+		 * 
+		 * for (Percorrenza percorrenza : resultList) { Double tempopercorrenza =
+		 * (Double) percorrenza.getTempopercorrenza(); // Richiama il calcolo del valore
+		 * percorrenza.setTempopercorrenza(tempopercorrenza); }
+		 * 
+		 * return resultList; }
+		 */
+
 	}
 }
