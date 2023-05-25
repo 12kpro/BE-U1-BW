@@ -6,7 +6,6 @@ import java.util.UUID;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import entities.Percorrenza;
@@ -91,32 +90,21 @@ public class PercorrenzaDAO {
 
 	public List<Percorrenza> getNumPercorrenzePerVeicolo() throws PersistenceException {
 		TypedQuery<Percorrenza> getAllQuery = em.createQuery(
-				"SELECT trattaid_id,veicoloid_id , COUNT(trattaid_id) AS numero "
-						+ "FROM Percorrenza p WHERE oraarrivo IS NOT NULL " + "GROUP BY trattaid_id, veicoloid_id",
+				"SELECT tratta_id,veicolo_id , COUNT(tratta_id) AS numero "
+						+ "FROM Percorrenza p WHERE oraarrivo IS NOT NULL " + "GROUP BY tratta_id, veicolo_id",
 				Percorrenza.class);
 		return getAllQuery.getResultList();
 	}
 
-	public List<Percorrenza> getPercorrenzaMediaPerTratta() throws PersistenceException {
-		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT trattaid_id, SUM(EXTRACT(EPOCH FROM "
-				+ "(oraarrivo - orapartenza)))/COUNT(trattaid_id) AS percorrenzamedia FROM Percorrenza p WHERE oraarrivo IS NOT NULL"
-				+ "GROUP BY trattaid_id", Percorrenza.class);
-		return getAllQuery.getResultList();
-	}
+//	public List<Percorrenza> getPercorrenzaMediaPerTratta() throws PersistenceException {
+//		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT trattaid_id, SUM(EXTRACT(EPOCH FROM "
+//				+ "(oraarrivo - orapartenza)))/COUNT(trattaid_id) AS percorrenzamedia FROM Percorrenza p WHERE oraarrivo IS NOT NULL"
+//				+ "GROUP BY trattaid_id", Percorrenza.class);
+//		return getAllQuery.getResultList();
+//	}
 
-	public void getTempoPercorrenzaPerVeicolo() throws PersistenceException {
-//		TypedQuery<Object[]> getAllQuery = em.createQuery(
-//				"SELECT p.tratta, p.veicolo, SUM(EXTRACT(EPOCH FROM (oraArrivo - oraPartenza)))  AS tempopercorrenza from Percorrenza p WHERE p.oraArrivo IS NOT NULL GROUP BY p.tratta, p.veicolo",
-//				Object[].class);
-//"select tratta_id ,veicolo_id , sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  as percorrenza from percorrenze where oraarrivo is not null group by tratta_id, veicolo_id"
-
-		// List<Object[]> lista = getAllQuery.getResultList();
-		// log.info(lista.toString());
-		// return lista;
-		String sql = "select id, oraarrivo, orapartenza, tratta_id ,veicolo_id , sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  as tempopercorrenza from percorrenze where oraarrivo is not null group by id, oraarrivo, orapartenza, tratta_id ,veicolo_id";
-		Query q = em.createNativeQuery(sql, Percorrenza.class);
-
-		log.info(q.getResultList().toString());
-
+	public List<Percorrenza> getTempoPercorrenzaPerVeicolo() throws PersistenceException {
+		String sql = "SELECT p FROM Percorrenza p WHERE oraarrivo IS NOT NULL";
+		return em.createQuery(sql, Percorrenza.class).getResultList();
 	}
 }

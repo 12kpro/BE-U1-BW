@@ -10,6 +10,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Formula;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,9 +28,10 @@ public class Tratta {
 	private String partenza;
 	@Column(nullable = false)
 	private String capolinea;
-	// private double tempoPercorrenzaMedio; // da rimuovere e usare un metodo?
 	@OneToMany(mappedBy = "tratta", cascade = CascadeType.ALL)
 	private List<Percorrenza> percorrenze;
+	@Formula("(SELECT SUM(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))/COUNT(tratta_id) AS tempoPercorrenzaMedio FROM percorrenze WHERE tratta_id = id AND oraarrivo is not null group by tratta_id)")
+	private double tempoPercorrenzaMedio;
 
 	public Tratta(String partenza, String capolinea) {
 		this.partenza = partenza;
