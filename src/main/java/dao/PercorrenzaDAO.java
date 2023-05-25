@@ -81,17 +81,18 @@ public class PercorrenzaDAO {
 	}
 
 	public List<Percorrenza> getPercorrenzaMediaPerTratta() {
-		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT trattaid_id, SUM(EXTRACT(EPOCH FROM "
-				+ "(oraarrivo - orapartenza)))/COUNT(trattaid_id) AS percorrenzamedia FROM Percorrenza p WHERE oraarrivo IS NOT NULL"
-				+ "GROUP BY trattaid_id", Percorrenza.class);
+		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT tratta_id, SUM(EXTRACT(EPOCH FROM "
+				+ "(oraarrivo - orapartenza)))/COUNT(tratta_id) AS percorrenzamedia FROM Percorrenza p WHERE oraarrivo IS NOT NULL"
+				+ "GROUP BY tratta_id", Percorrenza.class);
 		return getAllQuery.getResultList();
 	}
 
-	public List<Percorrenza> getTempoPercorrenzaPerVeicolo() {
-		TypedQuery<Percorrenza> getAllQuery = em.createQuery(
-				"SELECT trattaid_id ,veicoloid_id , SUM(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  AS tempopercorrenza from Percorrenza p"
-						+ "WHERE oraarrivo IS NOT NULL" + "GROUP BY trattaid_id, veicoloid_id",
-				Percorrenza.class);
+	public List<Object[]> getTempoPercorrenzaPerVeicolo() {
+		// em.createNativeQuery(null)
+		TypedQuery<Object[]> getAllQuery = em.createQuery(
+				"SELECT trattaId ,veicoloId , SUM(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  AS tempopercorrenza from Percorrenza p"
+						+ " WHERE oraarrivo IS NOT NULL" + " GROUP BY trattaId, veicoloId",
+				Object[].class);
 		return getAllQuery.getResultList();
 	}
 }

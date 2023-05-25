@@ -70,7 +70,7 @@ public class Prompt {
 					ricerche();
 					break;
 				case 2:
-
+					pd.getTempoPercorrenzaPerVeicolo();
 					break;
 				case 3:
 

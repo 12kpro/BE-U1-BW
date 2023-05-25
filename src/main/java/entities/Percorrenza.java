@@ -30,6 +30,8 @@ public class Percorrenza {
 	private Veicolo veicoloId;
 	@ManyToOne(optional = false)
 	private Tratta trattaId;
+//	@Transient
+//	private int tempopercorrenza;
 
 	public Percorrenza(String oraPartenza, String oraArrivo, Veicolo veicoloId, Tratta trattaId) {
 		this.oraPartenza = LocalDateTime.parse(oraPartenza, Application.dateTimeFormatter);
