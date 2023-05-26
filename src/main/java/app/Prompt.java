@@ -55,10 +55,10 @@ public class Prompt {
 
 	public static void main(String[] args) {
 
-		String options[] = { "0: Per Uscire", "1: Tempo medio per tratta", "2: Visualizza tempo di percorrenza",
-				"3: FindAll", "4: Visualizza Abbonamenti Scaduti", "5: Tessere scadute",
-				"6: Biglietti vidimati in un dato periodo", "7: Documenti viaggio per data e distributore",
-				"8: Biglietti vidimati per veicolo", "9 Percorrenza tratte per veicolo", "10: Carica dati di esempio" };
+		String options[] = { "0: Per Uscire", "1: Visualizza tempi di percorrenza medi per tratta",
+				"2: Visualizza tempo di percorrenza", "3: Visualizza Abbonamenti Scaduti", "4: Tessere scadute",
+				"5: Biglietti vidimati in un dato periodo", "6: Documenti viaggio per data e distributore",
+				"7: Biglietti vidimati per veicolo", "8 Percorrenza tratte per veicolo", "9: Carica dati di esempio" };
 
 		choice: while (true) {
 			try {
@@ -80,35 +80,30 @@ public class Prompt {
 					}
 					break;
 				case 3:
-					for (Tratta result : td.findAll()) {
-						log.info(result.toString());
-					}
-					break;
-				case 4:
 					for (DocumentoViaggio result : dvd.getAbbonamentiScaduti()) {
 						log.info(result.toString());
 					}
 					break;
-				case 5:
+				case 4:
 					for (Utente result : ud.findExpiredNow()) {
 						log.info(result.toString());
 					}
 					break;
-				case 6:
+				case 5:
 					bigliettiVidimatiInUnDatoPeriodo();
 
 					break;
-				case 7:
+				case 6:
 					documentiViaggioPerDataEDistributore();
 
 					break;
-				case 8:
+				case 7:
 					bigliettiVidimatiPerVeicolo();
 					break;
-				case 9:
+				case 8:
 					percorrenzaTratteveicolo();
 					break;
-				case 10:
+				case 9:
 					loadExampleData();
 					break;
 				default:
