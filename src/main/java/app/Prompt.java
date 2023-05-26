@@ -70,7 +70,9 @@ public class Prompt {
 					input.close();
 					break choice;
 				case 1:
-					// ricerche();
+					for (Tratta result : td.findAll()) {
+						log.info(result.toString());
+					}
 					break;
 				case 2:
 					for (Percorrenza result : pd.getTempoPercorrenzaPerVeicolo()) {
