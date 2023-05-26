@@ -1,6 +1,8 @@
 package app;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,10 +55,11 @@ public class Prompt {
 
 	public static void main(String[] args) {
 
-		String options[] = { "0: Per Uscire", "1: Esegui ricerche", "2: Visualizza tempo di percorrenza",
-				"3: Visualizza tempi di percorrenza medi per tratta", "4: Visualizza Abbonamenti Scaduti",
-				"5: Tessere scadute", "6: Biglietti vidimati", "7: Documenti viaggio per data e distributore",
-				"8: Biglietti vidimati per veicolo", "9 Percorrenza tratte per veicolo", "10: Carica dati di esempio" };
+		String options[] = { "0: Per Uscire", "1: Visualizza tempi di percorrenza medi per tratta",
+				"2: Visualizza tempo di percorrenza per veicoli", "3: Visualizza Abbonamenti Scaduti",
+				"4: Tessere scadute", "5: Biglietti vidimati in un dato periodo",
+				"6: Documenti viaggio per data e distributore", "7: Biglietti vidimati per veicolo",
+				"8 Percorrenza tratte per veicolo", "9: Carica dati di esempio" };
 
 		choice: while (true) {
 			try {
@@ -68,51 +71,40 @@ public class Prompt {
 					input.close();
 					break choice;
 				case 1:
-					ricerche();
-					break;
-				case 2:
-					for (Percorrenza result : pd.getTempoPercorrenzaPerVeicolo()) {
-						log.info(result.toString());
-					}
-					break;
-				case 3:
 					for (Tratta result : td.findAll()) {
 						log.info(result.toString());
 					}
 					break;
-				case 4:
+				case 2:
+					for (Percorrenza result : pd.getTempoPercorrenzaPerVeicoli()) {
+						log.info(result.toString());
+					}
+					break;
+				case 3:
 					for (DocumentoViaggio result : dvd.getAbbonamentiScaduti()) {
 						log.info(result.toString());
 					}
 					break;
-				case 5:
+				case 4:
 					for (Utente result : ud.findExpiredNow()) {
 						log.info(result.toString());
 					}
 					break;
+				case 5:
+					bigliettiVidimatiInUnDatoPeriodo();
+
+					break;
 				case 6:
-					for (DocumentoViaggio result : dvd.getBigliettiVidimatiPerPeriodo("01-03-2023", "30-04-2023")) {
-						log.info(result.toString());
-					}
+					documentiViaggioPerDataEDistributore();
 
 					break;
 				case 7:
-					for (DocumentoViaggio result : dvd.getDocumentiPerPeriodoEDistributore("01-03-2023", "30-04-2023",
-							"bb3ab9e3-9266-4b8f-b830-2a99b0053207")) {
-						log.info(result.toString());
-					}
-
+					bigliettiVidimatiPerVeicolo();
 					break;
 				case 8:
-					for (DocumentoViaggio result : dvd
-							.getNumeroBigliettiVidimatiPerVeicolo("586a23e4-ad21-476c-98da-75c04057d510")) {
-						log.info(result.toString());
-					}
-					break;
-				case 9:
 					percorrenzaTratteveicolo();
 					break;
-				case 10:
+				case 9:
 					loadExampleData();
 					break;
 				default:
@@ -123,6 +115,9 @@ public class Prompt {
 				log.info("Devi inserire un numero intero positivo!!");
 			} catch (PersistenceException e) {
 				log.error("Errore durante la lettura/scrittura {}", e.getMessage());
+			} catch (DateTimeParseException e) {
+				log.info("Devi inserire la data nel formato 'dd-mm-yyyy'!");
+
 			}
 			// em.close();
 		}
@@ -149,6 +144,94 @@ public class Prompt {
 					}
 				} else {
 					log.info("Nessuna tratta trovata per questo veicolo!");
+				}
+			} else {
+				log.info("L'opzione inserita " + selected + " non è valida!");
+			}
+		}
+
+	}
+
+	public static void bigliettiVidimatiPerVeicolo() {
+		List<Veicolo> veicoli = vd.findAll();
+		while (true) {
+			System.out.printf("%d: per uscire %n", 0);
+			for (int i = 0; i < veicoli.size(); i++) {
+				System.out.printf("%d: veicolo %s%n", i + 1, veicoli.get(i).getId());
+			}
+			int selected = Math.abs(Integer.parseInt(input.nextLine()));
+
+			if (selected == 0) {
+				break;
+			} else if (selected > 0 && selected < veicoli.size() + 1) {
+				List<DocumentoViaggio> numBiglietti = dvd
+						.getNumeroBigliettiVidimatiPerVeicolo(veicoli.get(selected - 1).getId().toString());
+				if (numBiglietti.size() > 0) {
+					log.info("Numero biglietti vidimati per il veicolo selezionato: {}", numBiglietti.size());
+					for (DocumentoViaggio n : numBiglietti) {
+						log.info(n.toString());
+					}
+				} else {
+					log.info("Nessun biglietto vidimato trovato per questo veicolo!");
+				}
+			} else {
+				log.info("L'opzione inserita " + selected + " non è valida!");
+			}
+		}
+	}
+
+	public static void bigliettiVidimatiInUnDatoPeriodo() throws DateTimeParseException {
+
+		System.out.println("Seleziona una data di inizio nel formato 'dd-mm-yyyy'");
+		String dataInizio = input.nextLine();
+		LocalDate.parse(dataInizio, dateFormatter);
+
+		System.out.println("Seleziona una data di fine nel formato 'dd-mm-yyyy'");
+		String dataFine = input.nextLine();
+		LocalDate.parse(dataFine, dateFormatter);
+
+		List<Biglietto> numBiglietti = dvd.getBigliettiVidimatiPerPeriodo(dataInizio, dataFine);
+
+		if (numBiglietti.size() > 0) {
+			log.info("Numero biglietti vidimati per il periodo selezionato: {}", numBiglietti.size());
+			for (DocumentoViaggio n : numBiglietti) {
+				log.info(n.toString());
+			}
+		} else {
+			log.info("Nessun biglietto vidimato trovato in questo periodo!");
+		}
+	}
+
+	public static void documentiViaggioPerDataEDistributore() throws DateTimeParseException {
+		System.out.println("Seleziona una data di inizio nel formato 'dd-mm-yyyy'");
+		String dataInizio = input.nextLine();
+		LocalDate.parse(dataInizio, dateFormatter);
+		System.out.println("Seleziona una data di fine nel formato 'dd-mm-yyyy'");
+		String dataFine = input.nextLine();
+		LocalDate.parse(dataFine, dateFormatter);
+		List<Distributore> distributori = dd.findAll();
+
+		while (true) {
+			System.out.printf("%d: per uscire %n", 0);
+			for (int i = 0; i < distributori.size(); i++) {
+				System.out.printf("%d: distributore %s %s%n", i + 1, distributori.get(i).getNome(),
+						distributori.get(i).getIndirizzo());
+			}
+			int selected = Math.abs(Integer.parseInt(input.nextLine()));
+
+			if (selected == 0) {
+				break;
+			} else if (selected > 0 && selected < distributori.size() + 1) {
+				List<DocumentoViaggio> numDocumenti = dvd.getDocumentiPerPeriodoEDistributore(dataInizio, dataFine,
+						distributori.get(selected - 1).getId().toString());
+				if (numDocumenti.size() > 0) {
+					log.info("Numero documenti di viaggio emessi dal distributore selezionato: {}",
+							numDocumenti.size());
+					for (DocumentoViaggio n : numDocumenti) {
+						log.info(n.toString());
+					}
+				} else {
+					log.info("Nessun documento di viaggio emesso da questo distributore!");
 				}
 			} else {
 				log.info("L'opzione inserita " + selected + " non è valida!");
@@ -262,39 +345,4 @@ public class Prompt {
 		pd.createByList(percorrenze);
 	}
 
-	public static void ricerche() {
-		String ricercheOpt[] = { "0: Esci ", "1: Visualizza tutte le tessere scadute",
-				"2 Visualizza tutte le tessere scadute per data" };
-//		System.out.print("Inserisci ISBN:");
-//		Long codice = Math.abs(Long.parseLong(input.nextLine()));
-//		System.out.print("Inserisci titolo:");
-//		String titolo = input.nextLine();
-//		System.out.print("Inserisci Anno Pubblicazione:");
-//		Integer annoPubblicazione = Math.abs(Integer.parseInt(input.nextLine()));
-//		System.out.print("Inserisci Numero Pagine:");
-//		Integer numPagine = Math.abs(Integer.parseInt(input.nextLine()));
-//		System.out.print("Inserisci Periodicità:");
-		ricercheLoop: while (true) {
-			System.out.println(Arrays.asList(ricercheOpt));
-			int ricercheSel = Math.abs(Integer.parseInt(input.nextLine()));
-
-			switch (ricercheSel) {
-			case 0:
-				break ricercheLoop;
-			case 1:
-				for (Utente result : ud.findExpiredNow()) {
-					log.info(result.toString());
-				}
-				break;
-			case 2:
-				for (Utente result : ud.findExpiredByDate(input.nextLine())) {
-					log.info(result.toString());
-				}
-				break;
-			default:
-				log.info("L'opzione inserita " + ricercheSel + " non è valida!");
-				break;
-			}
-		}
-	}
 }
