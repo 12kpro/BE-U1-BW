@@ -56,9 +56,10 @@ public class Prompt {
 	public static void main(String[] args) {
 
 		String options[] = { "0: Per Uscire", "1: Visualizza tempi di percorrenza medi per tratta",
-				"2: Visualizza tempo di percorrenza", "3: Visualizza Abbonamenti Scaduti", "4: Tessere scadute",
-				"5: Biglietti vidimati in un dato periodo", "6: Documenti viaggio per data e distributore",
-				"7: Biglietti vidimati per veicolo", "8 Percorrenza tratte per veicolo", "9: Carica dati di esempio" };
+				"2: Visualizza tempo di percorrenza per veicoli", "3: Visualizza Abbonamenti Scaduti",
+				"4: Tessere scadute", "5: Biglietti vidimati in un dato periodo",
+				"6: Documenti viaggio per data e distributore", "7: Biglietti vidimati per veicolo",
+				"8 Percorrenza tratte per veicolo", "9: Carica dati di esempio" };
 
 		choice: while (true) {
 			try {
@@ -75,7 +76,7 @@ public class Prompt {
 					}
 					break;
 				case 2:
-					for (Percorrenza result : pd.getTempoPercorrenzaPerVeicolo()) {
+					for (Percorrenza result : pd.getTempoPercorrenzaPerVeicoli()) {
 						log.info(result.toString());
 					}
 					break;

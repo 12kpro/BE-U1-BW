@@ -103,7 +103,7 @@ public class PercorrenzaDAO {
 //		return getAllQuery.getResultList();
 //	}
 
-	public List<Percorrenza> getTempoPercorrenzaPerVeicolo() throws PersistenceException {
+	public List<Percorrenza> getTempoPercorrenzaPerVeicoli() throws PersistenceException {
 		String sql = "SELECT p FROM Percorrenza p WHERE oraarrivo IS NOT NULL";
 		return em.createQuery(sql, Percorrenza.class).getResultList();
 
