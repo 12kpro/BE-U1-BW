@@ -55,8 +55,9 @@ public class Prompt {
 
 		String options[] = { "0: Per Uscire", "1: Esegui ricerche", "2: Visualizza tempo di percorrenza",
 				"3: Visualizza tempi di percorrenza medi per tratta", "4: Visualizza Abbonamenti Scaduti",
-				"5: Tessere scadute", "6: Biglietti vidimati", "7: Documenti viaggio per data e distributore",
-				"8: Biglietti vidimati per veicolo", "9 Percorrenza tratte per veicolo", "10: Carica dati di esempio" };
+				"5: Tessere scadute", "6: Biglietti vidimati in un dato periodo",
+				"7: Documenti viaggio per data e distributore", "8: Biglietti vidimati per veicolo",
+				"9 Percorrenza tratte per veicolo", "10: Carica dati di esempio" };
 
 		choice: while (true) {
 			try {
@@ -91,23 +92,15 @@ public class Prompt {
 					}
 					break;
 				case 6:
-					for (DocumentoViaggio result : dvd.getBigliettiVidimatiPerPeriodo("01-03-2023", "30-04-2023")) {
-						log.info(result.toString());
-					}
+					bigliettiVidimatiInUnDatoPeriodo();
 
 					break;
 				case 7:
-					for (DocumentoViaggio result : dvd.getDocumentiPerPeriodoEDistributore("01-03-2023", "30-04-2023",
-							"bb3ab9e3-9266-4b8f-b830-2a99b0053207")) {
-						log.info(result.toString());
-					}
+					documentiViaggioPerDataEDistributore();
 
 					break;
 				case 8:
-					for (DocumentoViaggio result : dvd
-							.getNumeroBigliettiVidimatiPerVeicolo("586a23e4-ad21-476c-98da-75c04057d510")) {
-						log.info(result.toString());
-					}
+					bigliettiVidimatiPerVeicolo();
 					break;
 				case 9:
 					percorrenzaTratteveicolo();
@@ -149,6 +142,106 @@ public class Prompt {
 					}
 				} else {
 					log.info("Nessuna tratta trovata per questo veicolo!");
+				}
+			} else {
+				log.info("L'opzione inserita " + selected + " non è valida!");
+			}
+		}
+
+	}
+
+	public static void bigliettiVidimatiPerVeicolo() {
+		List<Veicolo> veicoli = vd.findAll();
+		while (true) {
+			System.out.printf("%d: per uscire %n", 0);
+			for (int i = 0; i < veicoli.size(); i++) {
+				System.out.printf("%d: veicolo %s%n", i + 1, veicoli.get(i).getId());
+			}
+			int selected = Math.abs(Integer.parseInt(input.nextLine()));
+
+			if (selected == 0) {
+				break;
+			} else if (selected > 0 && selected < veicoli.size() + 1) {
+				List<DocumentoViaggio> numBiglietti = dvd
+						.getNumeroBigliettiVidimatiPerVeicolo(veicoli.get(selected - 1).getId().toString());
+				if (numBiglietti.size() > 0) {
+					log.info("Numero biglietti vidimati per il veicolo selezionato: {}", numBiglietti.size());
+					for (DocumentoViaggio n : numBiglietti) {
+						log.info(n.toString());
+					}
+				} else {
+					log.info("Nessun biglietto vidimato trovato per questo veicolo!");
+				}
+			} else {
+				log.info("L'opzione inserita " + selected + " non è valida!");
+			}
+		}
+	}
+
+	public static void bigliettiVidimatiInUnDatoPeriodo() {
+		System.out.println("Seleziona una data di inizio nel formato 'dd-mm-yyyy'");
+		String dataInizio = input.nextLine();
+		/*
+		 * if (DateTimeFormatter.ofPattern(dataInizio) != dateFormatter) {
+		 * log.info("il formato della data inserita non è valido");
+		 * 
+		 * }
+		 */
+		System.out.println("Seleziona una data di fine nel formato 'dd-mm-yyyy'");
+		String dataFine = input.nextLine();
+		/*
+		 * if (DateTimeFormatter.ofPattern(dataFine) != dateFormatter) {
+		 * log.info("il formato della data inserita non è valido"); }
+		 */
+		List<Biglietto> numBiglietti = dvd.getBigliettiVidimatiPerPeriodo(dataInizio, dataFine);
+
+		if (numBiglietti.size() > 0) {
+			log.info("Numero biglietti vidimati per il periodo selezionato: {}", numBiglietti.size());
+			for (DocumentoViaggio n : numBiglietti) {
+				log.info(n.toString());
+			}
+		} else {
+			log.info("Nessun biglietto vidimato trovato in questo periodo!");
+		}
+	}
+
+	public static void documentiViaggioPerDataEDistributore() {
+		System.out.println("Seleziona una data di inizio nel formato 'dd-mm-yyyy'");
+		String dataInizio = input.nextLine();
+		/*
+		 * if (DateTimeFormatter.ofPattern(dataInizio) != dateFormatter) {
+		 * log.info("il formato della data inserita non è valido");
+		 * 
+		 * }
+		 */
+		System.out.println("Seleziona una data di fine nel formato 'dd-mm-yyyy'");
+		String dataFine = input.nextLine();
+		/*
+		 * if (DateTimeFormatter.ofPattern(dataFine) != dateFormatter) {
+		 * log.info("il formato della data inserita non è valido"); }
+		 */
+		List<Distributore> distributori = dd.findAll();
+
+		while (true) {
+			System.out.printf("%d: per uscire %n", 0);
+			for (int i = 0; i < distributori.size(); i++) {
+				System.out.printf("%d: distributore %s%n", i + 1, distributori.get(i).getId());
+			}
+			int selected = Math.abs(Integer.parseInt(input.nextLine()));
+
+			if (selected == 0) {
+				break;
+			} else if (selected > 0 && selected < distributori.size() + 1) {
+				List<DocumentoViaggio> numDocumenti = dvd.getDocumentiPerPeriodoEDistributore(dataInizio, dataFine,
+						distributori.get(selected - 1).getId().toString());
+				if (numDocumenti.size() > 0) {
+					log.info("Numero documenti di viaggio emessi dal distributore selezionato: {}",
+							numDocumenti.size());
+					for (DocumentoViaggio n : numDocumenti) {
+						log.info(n.toString());
+					}
+				} else {
+					log.info("Nessun documento di viaggio emesso da questo distributore!");
 				}
 			} else {
 				log.info("L'opzione inserita " + selected + " non è valida!");
