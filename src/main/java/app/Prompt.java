@@ -54,9 +54,9 @@ public class Prompt {
 	public static void main(String[] args) {
 
 		String options[] = { "0: Per Uscire", "1: Esegui ricerche", "2: Visualizza tempo di percorrenza",
-				"3: Visualizza tempi di percorrenza medi per tratta", "4: Leggi Archivio da disco", "5: Cerca per ISBN",
-				"6: Cerca per Autore", "7: Cerca per anno pubblicazione", "8: Rimuovi pubblicazione per ISBN",
-				"9: Carica dati di esempio" };
+				"3: Visualizza tempi di percorrenza medi per tratta", "4: Visualizza Abbonamenti Scaduti",
+				"5: Tessere scadute", "6: Biglietti vidimati", "7: Cerca per anno pubblicazione",
+				"8: Rimuovi pubblicazione per ISBN", "9: Carica dati di esempio" };
 
 		choice: while (true) {
 			try {
@@ -81,12 +81,19 @@ public class Prompt {
 					}
 					break;
 				case 4:
-
+					for (DocumentoViaggio result : dvd.getAbbonamentiScaduti()) {
+						log.info(result.toString());
+					}
 					break;
 				case 5:
-
+					for (Utente result : ud.findExpiredNow()) {
+						log.info(result.toString());
+					}
 					break;
 				case 6:
+					for (DocumentoViaggio result : dvd.getBigliettiVidimatiPerPeriodo("01-03-2023", "30-04-2023")) {
+						log.info(result.toString());
+					}
 
 					break;
 				case 7:
