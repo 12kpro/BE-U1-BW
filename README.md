@@ -2,113 +2,95 @@ II sistema deve permettere l'emissione dei biglietti, sia da distributori automa
 
 oltre che Ilemissione di abbonamenti settimanali e mensili di tipo nominativo ad utenti dotati di tessera.
 
-La tessera ha validitå annuale e deve essere rinnovata alla scadenza.
+La tessera ha validitå annuale e deve essere rinnovata alla scadenza. 
 
-Ogni biglietto ed abbonamento é identificato da un codice univoco. 
+```
+select *, (datainizio + 365) < now()  as scaduta from utenti u where (datainizio + 365) < now() ;
+```
 
-Deve essere possibile tenere traccia del numero di biglietti e/o abbonamenti emessi in un dato periodo di tempo in totale e per punto di emissione. 
+Ogni biglietto ed abbonamento é identificato da un codice univoco.
+
+Deve essere possibile tenere traccia del numero di biglietti e/o abbonamenti emessi in un dato periodo di tempo in totale e per punto di emissione.
+
+```
+select tipo_documento,distributoreid_id , count(*)  as numero
+from documenti_viaggio
+where dataemissione  BETWEEN '2023-04-01' AND '2023-05-31'
+group by tipo_documento, distributoreid_id
+```
 
 I distributori automatici possono essere attivi o fuori servizio.l
 
 Occorre inoltre permettere la verifica rapida della validitå di un abbonamento in base al numero di tessera dell'utente controllato.
 
-Documenti di viaggio
- - id: UUID
- - data_emissione
- - distributore_id
- 
-Abbonamenti
- - tessera_id
- - data_scadenza: calcolato
- - tipo [SETTIMANALE, MENSILE]
-
-Biglietti
-    - data_vidimazione
-    - veicolo_id
-
-Distributori
-    id: UUID
-    tipo: [AUTOMATICI, RIVENDITORI]
-    attivo: 
-
-
-Utenti
-    id: UUID (tessera)
-    nome:
-    cognome:
-    data_inizio:
-    data_scadenza:
+```
+select * from (select *,
+    CASE
+        WHEN dv.tipo = 'SETTIMANALE' THEN dv.dataemissione + 7 < now()
+        WHEN dv.tipo = 'MENSILE' THEN dv.dataemissione + 30 < now()
+    END AS scadenza
+from documenti_viaggio dv join utenti u on dv.tesseraid_id = u.id
+) s
+where scadenza
+```
 
 Quando un biglietto viene vidimato su un
 mezzo, esso deve essere annullato e deve essere possibile acquisire il numero di biglietti vidimati su un
 particolare mezzo o in totale in un periodo di tempo.
+Conteggio per veiocolo
 
+```
+select count(*) as totale  from documenti_viaggio dv where datavidimazione is not null and dv.veicoloid_id = '79df7151-ee6d-41fa-a9f4-d694fe9a7f45'
+```
+
+Conteggio per periodo
+
+```
+select count(*) as totale  from documenti_viaggio dv where datavidimazione is not null and dv.datavidimazione  BETWEEN '2023-04-01' AND '2023-04-30'
+```
 
 II sistema deve inoltre prevedere la gestione del parco mezzi. I mezzi possono essere tram o autobus ed avere
 una certa capienza in base al tipo di mezzo. Ogni mezzo pub essere in servizio o in manutenzione ed occorre
 tenere traccia dei periodi di servizio o manutenzione di ogni mezzo.
 
-Veicoli
-- id: UUID
-- tipo:[TRAM,AUTOBUS]
-- capienza 50 o 60 settato in base al tipo passato al costruttore
-- tratta_id
-- stato: servizio o manutenzione ??????
-
-
-Manutenzioni
-    - id:UUID
-    - data_inizio:
-    - data_fine:
-    - veicolo_id
-    
 Ogni mezzo in servizio puö essere assegnato ad una tratta, che é caratterizzata da una zona di partenza, un
 capolinea ed un tempo medio di percorrenza. Occorre tenere traccia del numero di volte che un mezzo percorre
 una tappa e del tempo effettivo di percorrenza di ogni tratta.
 
-Tratte 
-    - id: UUID 
-    - partenza: 
-    - capolinea:
-    - t_percorrenza_medio: calcolato in base alle percorrenze
+numero percorrenze per tratta per veicolo
 
-Percorrenze
-    - id: UUID
-    - veicolo_id:
-    - tratta_id:
-    - ora_partenza
-    - ora_arrivo
-    - t_percorrenza_effettivo: calcolato ora_arrivo - ora_partenza# BE-U1-BW
+```
+select trattaid_id,veicoloid_id , count(trattaid_id) as numero from percorrenze p
+where oraarrivo is not null
+group by trattaid_id, veicoloid_id
+```
 
-II sistema deve permettere l'emissione dei biglietti, sia da distributori automatici che da rivenditori autorizzati,
-oltre che Ilemissione di abbonamenti settimanali e mensili di tipo nominativo ad utenti dotati di tessera. La tesser
-ha validitå annuale e deve essere rinnovata alla scadenza. Ogni biglietto ed abbonamento é identificato da un
-codice univoco. Deve essere possibile tenere traccia del numero di biglietti e/o abbonamenti emessi in un dato
-periodo di tempo in totale e per punto di emissione. I distributori automatici possono essere attivi o fuori servizio.l
-Occorre inoltre permettere la verifica rapida della validitå di un abbonamento in base al numero di tessera
-dell'utente controllato.
+tempo di percorrenza tratta per veicolo:
 
-II sistema deve inoltre prevedere la gestione del parco mezzi. I mezzi possono essere tram o autobus ed avere
-una certa capienza in base al tipo di mezzo. Ogni mezzo pub essere in servizio o in manutenzione ed occorre
-tenere traccia dei periodi di servizio o manutenzione di ogni mezzo.
+```
+select trattaid_id ,veicoloid_id , sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))  as percorrenza from percorrenze p
+where oraarrivo is not null
+group by trattaid_id, veicoloid_id
+```
 
-Quando un biglietto viene vidimato su un
-mezzo, esso deve essere annullato e deve essere possibile acquisire il numero di biglietti vidimati su un
-particolare mezzo o in totale in un periodo di tempo.
+tempo di percorrenza medio per tratta
 
-Veicoli
+```
+select trattaid_id, sum(EXTRACT(EPOCH FROM (oraarrivo - orapartenza)))/count(trattaid_id)  as percorrenzamedia from percorrenze p
+where oraarrivo is not null
+group by trattaid_id
+```
+Esempio metodo e query con parametro/i:
 
-- id: UUID
-- tipo:[TRAM,AUTOBUS]
-- capienza
-- tratta
+```
+   public List<Prestito>  findByTesseraUtente(String t) {
+        Query q = em.createQuery("SELECT p FROM Prestito p JOIN Utente u on p.utente=u.id WHERE u.numeroTessera = :t");
+        q.setParameter("t", UUID.fromString(t));
+        return q.getResultList();
+    }
+```    
 
-Manutenzioni - id:UUID - data_inizio: - data_fine: - veicolo
-
-Ogni mezzo in servizio puö essere assegnato ad una tratta, che é caratterizzata da una zona di partenza, un
-capolinea ed un tempo medio di percorrenza. Occorre tenere traccia del numero di volte che un mezzo percorre
-una tappa e del tempo effettivo di percorrenza di ogni tratta.
-
-Tratte - id: UUID - partenza: - capolinea: - t_percorrenza_medio: calcolato
-
-Percorrenze - veicolo_id: - tratta_id: - ora_partenza - ora_arrivo - t_percorrenza_effettivo: ora_arrivo - ora_partenza
+TODO:
+- [ ] Testare metodi delle query
+- [ ] Testare metodi delete
+- [ ] Fare Prompt
