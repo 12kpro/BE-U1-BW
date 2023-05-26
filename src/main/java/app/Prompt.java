@@ -53,9 +53,10 @@ public class Prompt {
 
 	public static void main(String[] args) {
 
-		String options[] = { "0: Per Uscire", "1: Esegui ricerche", "2: Aggiungi/Aggiorna Rivista",
-				"3: Salva Archivio su disco", "4: Leggi Archivio da disco", "5: Cerca per ISBN", "6: Cerca per Autore",
-				"7: Cerca per anno pubblicazione", "8: Rimuovi pubblicazione per ISBN", "9: Carica dati di esempio" };
+		String options[] = { "0: Per Uscire", "1: Esegui ricerche", "2: Visualizza tempo di percorrenza",
+				"3: Visualizza tempi di percorrenza medi per tratta", "4: Visualizza Abbonamenti Scaduti",
+				"5: Tessere scadute", "6: Biglietti vidimati", "7: Documenti viaggio per data e distributore",
+				"8: Biglietti vidimati per veicolo", "9 Percorrenza tratte per veicolo", "10: Carica dati di esempio" };
 
 		choice: while (true) {
 			try {
@@ -70,27 +71,48 @@ public class Prompt {
 					ricerche();
 					break;
 				case 2:
-					pd.getTempoPercorrenzaPerVeicolo();
+					for (Percorrenza result : pd.getTempoPercorrenzaPerVeicolo()) {
+						log.info(result.toString());
+					}
 					break;
 				case 3:
-
+					for (Tratta result : td.findAll()) {
+						log.info(result.toString());
+					}
 					break;
 				case 4:
-
+					for (DocumentoViaggio result : dvd.getAbbonamentiScaduti()) {
+						log.info(result.toString());
+					}
 					break;
 				case 5:
-
+					for (Utente result : ud.findExpiredNow()) {
+						log.info(result.toString());
+					}
 					break;
 				case 6:
+					for (DocumentoViaggio result : dvd.getBigliettiVidimatiPerPeriodo("01-03-2023", "30-04-2023")) {
+						log.info(result.toString());
+					}
 
 					break;
 				case 7:
+					for (DocumentoViaggio result : dvd.getDocumentiPerPeriodoEDistributore("01-03-2023", "30-04-2023",
+							"bb3ab9e3-9266-4b8f-b830-2a99b0053207")) {
+						log.info(result.toString());
+					}
 
 					break;
 				case 8:
-
+					for (DocumentoViaggio result : dvd
+							.getNumeroBigliettiVidimatiPerVeicolo("586a23e4-ad21-476c-98da-75c04057d510")) {
+						log.info(result.toString());
+					}
 					break;
 				case 9:
+					percorrenzaTratteveicolo();
+					break;
+				case 10:
 					loadExampleData();
 					break;
 				default:
@@ -103,6 +125,34 @@ public class Prompt {
 				log.error("Errore durante la lettura/scrittura {}", e.getMessage());
 			}
 			// em.close();
+		}
+	}
+
+	public static void percorrenzaTratteveicolo() {
+		List<Veicolo> veicoli = vd.findAll();
+		while (true) {
+			System.out.printf("%d: per uscire %n", 0);
+			for (int i = 0; i < veicoli.size(); i++) {
+				System.out.printf("%d: veicolo %s%n", i + 1, veicoli.get(i).getId());
+			}
+			int selected = Math.abs(Integer.parseInt(input.nextLine()));
+
+			if (selected == 0) {
+				break;
+			} else if (selected > 0 && selected < veicoli.size() + 1) {
+				List<Percorrenza> numPercorrenze = pd
+						.getNumPercorrenzePerVeicolo(veicoli.get(selected - 1).getId().toString());
+				if (numPercorrenze.size() > 0) {
+					log.info("Numero percorrenze per il veicolo selezionato: {}", numPercorrenze.size());
+					for (Percorrenza n : numPercorrenze) {
+						log.info(n.toString());
+					}
+				} else {
+					log.info("Nessuna tratta trovata per questo veicolo!");
+				}
+			} else {
+				log.info("L'opzione inserita " + selected + " non è valida!");
+			}
 		}
 	}
 
@@ -158,12 +208,12 @@ public class Prompt {
 
 		vd.createByList(veicoli);
 		veicoli.get(0).setInServizio(true);
-		veicoli.get(0).setTrattaId(tratte.get(0));
+		veicoli.get(0).setTratta(tratte.get(0));
 		vd.update(veicoli.get(0));
 
 		vd.createByList(veicoli);
 		veicoli.get(3).setInServizio(true);
-		veicoli.get(3).setTrattaId(tratte.get(2));
+		veicoli.get(3).setTratta(tratte.get(2));
 		vd.update(veicoli.get(3));
 
 		DocumentoViaggio documento1 = new Abbonamento("18-05-2023", distributori.get(0), TipoAbbonamento.SETTIMANALE,
@@ -188,15 +238,15 @@ public class Prompt {
 		dvd.createByList(documenti);
 
 		documento3.setDataVidimazione("24-05-2023");
-		documento3.setVeicoloId(veicoli.get(3));
+		documento3.setVeicolo(veicoli.get(3));
 		bd.update(documento3);
 
 		documento4.setDataVidimazione("16-04-2023");
-		documento4.setVeicoloId(veicoli.get(2));
+		documento4.setVeicolo(veicoli.get(2));
 		bd.update(documento4);
 
 		documento5.setDataVidimazione("22-03-2023");
-		documento5.setVeicoloId(veicoli.get(3));
+		documento5.setVeicolo(veicoli.get(3));
 		bd.update(documento5);
 
 		List<Manutenzione> manutenzioni = new ArrayList<Manutenzione>();

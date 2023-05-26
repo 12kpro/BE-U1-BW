@@ -1,6 +1,5 @@
 package dao;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -12,6 +11,7 @@ import javax.persistence.TypedQuery;
 import org.hibernate.HibernateException;
 import org.hibernate.exception.ConstraintViolationException;
 
+import entities.Biglietto;
 import entities.DocumentoViaggio;
 import lombok.extern.slf4j.Slf4j;
 
@@ -93,44 +93,36 @@ public class DocumentoViaggioDao {
 		return getAllQuery.getResultList();
 	}
 
-	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(LocalDate di, LocalDate df, String id)
+	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(String di, String df, String id)
 			throws PersistenceException {
-		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT tipo_documento,distributoreid_id , COUNT(*) as numero "
-				+ "FROM documenti_viaggio " + "WHERE dataEmissione BETWEEN dataInizio = :di AND dataFine = :df "
-				+ "GROUP BY tipo_documento, distributoreid_id = :id", DocumentoViaggio.class);
+		TypedQuery<DocumentoViaggio> q = em.createQuery(
+				"SELECT dv FROM DocumentoViaggio dv JOIN Distributore di on dv.distributore = di.id WHERE dv.dataEmissione BETWEEN to_date(:di,'dd-mm-yyyy') AND to_date(:df,'dd-mm-yyyy') AND di.id = :id",
+				DocumentoViaggio.class);
 		q.setParameter("di", di);
 		q.setParameter("df", df);
 		q.setParameter("id", UUID.fromString(id));
-
 		return q.getResultList();
 
 	}
 
-	public List<DocumentoViaggio> getAbbonamentiScaduti(String id) throws PersistenceException {
-		TypedQuery<DocumentoViaggio> q = em
-				.createQuery(
-						"SELECT * FROM (SELECT *, " + "CASE WHEN dv.tipo = :'SETTIMANALE'"
-								+ "THEN  dv.dataemissione + 7 < now() " + "WHEN dv.tipo = 'MENSILE' "
-								+ "THEN dv.dataemissione + 30 < now() END AS scadenza " + "FROM documenti_viaggio dv "
-								+ "JOIN utenti u on dv.tesseraid_id = :id ) s " + "WHERE scadenza",
-						DocumentoViaggio.class);
-		q.setParameter("id", UUID.fromString(id));
+	public List<DocumentoViaggio> getAbbonamentiScaduti() throws PersistenceException {
+		String sql = "select tipo_documento, id, dataemissione, datavidimazione, tipo, distributore_id, veicolo_id, tessera_id  FROM (select *, case WHEN dv.tipo = 'SETTIMANALE' THEN dv.dataemissione + 7 < now() WHEN dv.tipo = 'MENSILE' THEN dv.dataemissione + 30 < now() END AS scadenza from documenti_viaggio dv where tessera_id is not NULL) s where scadenza";
+		return em.createNativeQuery(sql, DocumentoViaggio.class).getResultList();
 
-		return q.getResultList();
 	}
 
 	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerVeicolo(String id) throws PersistenceException {
-		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale" + "FROM documenti_viaggio dv "
-				+ "WHERE datavidimazione IS NOT null AND dv.veicoloid_id = :id", DocumentoViaggio.class);
+		TypedQuery<DocumentoViaggio> q = em.createQuery(
+				"SELECT dv FROM DocumentoViaggio dv JOIN Veicolo v on dv.veicolo = v.id WHERE datavidimazione IS NOT null AND v.id = :id",
+				DocumentoViaggio.class);
 		q.setParameter("id", UUID.fromString(id));
 		return q.getResultList();
 	}
 
-	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerPeriodo(LocalDate di, LocalDate df)
-			throws PersistenceException {
-		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale " + "FROM documenti_viaggio dv "
-				+ "WHERE datavidimazione IS NOT null AND dv.datavidimazione BETWEEN dataInizio= :di AND dataFine= :df",
-				DocumentoViaggio.class);
+	public List<Biglietto> getBigliettiVidimatiPerPeriodo(String di, String df) throws PersistenceException {
+		TypedQuery<Biglietto> q = em.createQuery(
+				"SELECT b FROM Biglietto b WHERE dataVidimazione IS NOT null AND dataVidimazione BETWEEN  to_date(:di,'dd-mm-yyyy') AND to_date(:df,'dd-mm-yyyy')",
+				Biglietto.class);
 		q.setParameter("di", di);
 		q.setParameter("df", df);
 		return q.getResultList();
