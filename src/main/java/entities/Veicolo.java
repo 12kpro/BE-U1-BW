@@ -25,6 +25,7 @@ import utils.TipoVeicolo;
 @Getter
 @Setter
 @NoArgsConstructor
+//@ToString
 public class Veicolo implements Serializable {
 	@Id
 	private UUID id = UUID.randomUUID();

@@ -96,11 +96,11 @@ public class DocumentoViaggioDao {
 	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(String di, String df, String id)
 			throws PersistenceException {
 		TypedQuery<DocumentoViaggio> q = em.createQuery(
-				"SELECT dv FROM DocumentoViaggio dv WHERE dataEmissione BETWEEN to_date(:di,'dd-mm-yyyy') AND to_date(:df,'dd-mm-yyyy') AND distributore = :id",
+				"SELECT dv FROM DocumentoViaggio dv JOIN Distributore di on dv.distributore = di.id WHERE dv.dataEmissione BETWEEN to_date(:di,'dd-mm-yyyy') AND to_date(:df,'dd-mm-yyyy') AND di.id = :id",
 				DocumentoViaggio.class);
 		q.setParameter("di", di);
 		q.setParameter("df", df);
-		q.setParameter("id", id);
+		q.setParameter("id", UUID.fromString(id));
 		return q.getResultList();
 
 	}
@@ -112,8 +112,9 @@ public class DocumentoViaggioDao {
 	}
 
 	public List<DocumentoViaggio> getNumeroBigliettiVidimatiPerVeicolo(String id) throws PersistenceException {
-		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT COUNT(*) as totale" + "FROM documenti_viaggio dv "
-				+ "WHERE datavidimazione IS NOT null AND dv.veicoloid_id = :id", DocumentoViaggio.class);
+		TypedQuery<DocumentoViaggio> q = em.createQuery(
+				"SELECT dv FROM DocumentoViaggio dv JOIN Veicolo v on dv.veicolo = v.id WHERE datavidimazione IS NOT null AND v.id = :id",
+				DocumentoViaggio.class);
 		q.setParameter("id", UUID.fromString(id));
 		return q.getResultList();
 	}

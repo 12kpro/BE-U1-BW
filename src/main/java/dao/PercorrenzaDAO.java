@@ -88,11 +88,11 @@ public class PercorrenzaDAO {
 		return getAllQuery.getResultList();
 	}
 
-	public List<Percorrenza> getNumPercorrenzePerVeicolo() throws PersistenceException {
+	public List<Percorrenza> getNumPercorrenzePerVeicolo(String id) throws PersistenceException {
 		TypedQuery<Percorrenza> getAllQuery = em.createQuery(
-				"SELECT tratta_id,veicolo_id , COUNT(tratta_id) AS numero "
-						+ "FROM Percorrenza p WHERE oraarrivo IS NOT NULL " + "GROUP BY tratta_id, veicolo_id",
+				"SELECT p FROM Percorrenza p JOIN Veicolo v ON p.veicolo = v.id WHERE oraArrivo is not null AND v.id=:id",
 				Percorrenza.class);
+		getAllQuery.setParameter("id", UUID.fromString(id));
 		return getAllQuery.getResultList();
 	}
 
