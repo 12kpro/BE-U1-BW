@@ -16,9 +16,7 @@ import utils.TipoAbbonamento;
 @NoArgsConstructor
 public class Abbonamento extends DocumentoViaggio {
 	@Enumerated(EnumType.STRING)
-	// @Column(nullable = false)
 	private TipoAbbonamento tipo;
-	// private LocalDate dataScadenza; // calcolato?
 	@ManyToOne
 	private Utente tessera;
 
@@ -28,12 +26,6 @@ public class Abbonamento extends DocumentoViaggio {
 		this.tessera = tessera;
 	}
 
-	/*
-	 * @PrePersist public void dataScadenza() { if (tipo ==
-	 * TipoAbbonamento.SETTIMANALE) { this.dataScadenza = dataEmissione.plusDays(7);
-	 * } else if (tipo == TipoAbbonamento.MENSILE) { this.dataScadenza =
-	 * dataEmissione.plusDays(30); } }
-	 */
 	@Override
 	public String toString() {
 		return "Abbonamento [tipo=" + tipo + ", tessera_id=" + tessera + "]";

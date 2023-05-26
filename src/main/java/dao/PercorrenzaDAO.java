@@ -96,13 +96,6 @@ public class PercorrenzaDAO {
 		return getAllQuery.getResultList();
 	}
 
-//	public List<Percorrenza> getPercorrenzaMediaPerTratta() throws PersistenceException {
-//		TypedQuery<Percorrenza> getAllQuery = em.createQuery("SELECT trattaid_id, SUM(EXTRACT(EPOCH FROM "
-//				+ "(oraarrivo - orapartenza)))/COUNT(trattaid_id) AS percorrenzamedia FROM Percorrenza p WHERE oraarrivo IS NOT NULL"
-//				+ "GROUP BY trattaid_id", Percorrenza.class);
-//		return getAllQuery.getResultList();
-//	}
-
 	public List<Percorrenza> getTempoPercorrenzaPerVeicoli() throws PersistenceException {
 		String sql = "SELECT p FROM Percorrenza p WHERE oraarrivo IS NOT NULL";
 		return em.createQuery(sql, Percorrenza.class).getResultList();

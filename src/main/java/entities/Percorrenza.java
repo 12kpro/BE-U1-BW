@@ -4,12 +4,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import javax.persistence.Column;
-import javax.persistence.ColumnResult;
-import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SqlResultSetMapping;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Formula;
@@ -26,12 +23,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-@SqlResultSetMapping(name = "PercorrenzaWithTempoPercorrenzaMapping", classes = @ConstructorResult(targetClass = Percorrenza.class, columns = {
-		@ColumnResult(name = "id", type = UUID.class), @ColumnResult(name = "orapartenza", type = LocalDateTime.class),
-		@ColumnResult(name = "oraarrivo", type = LocalDateTime.class),
-		@ColumnResult(name = "veicolo_id", type = Veicolo.class),
-		@ColumnResult(name = "tratta_id", type = Tratta.class),
-		@ColumnResult(name = "tempopercorrenza", type = Double.class) }))
 public class Percorrenza {
 	@Id
 	private UUID id = UUID.randomUUID();
@@ -67,11 +58,4 @@ public class Percorrenza {
 		this.veicolo = veicolo;
 		this.tratta = tratta;
 	}
-
-//	@Override
-//	public String toString() {
-//		return "Percorrenza [id=" + id + ", oraPartenza=" + oraPartenza + ", oraArrivo=" + oraArrivo + ", veicoloId="
-//				+ veicolo + ", trattaId=" + tratta + "]";
-//	}
-
 }

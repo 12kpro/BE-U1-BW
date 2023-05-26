@@ -8,10 +8,6 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.HibernateException;
-import org.hibernate.exception.ConstraintViolationException;
-
-
 import entities.Utente;
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,14 +88,12 @@ public class UtenteDao {
 		return getAllQuery.getResultList();
 	}
 
-
 	public List<Utente> findExpiredNow() {
 		TypedQuery<Utente> getAllQuery = em.createQuery("SELECT u FROM Utente u WHERE (datainizio + 365) < NOW()",
 
 				Utente.class);
 		return getAllQuery.getResultList();
 	}
-
 
 	public List<Utente> findExpiredByDate(String d) {
 		TypedQuery<Utente> getAllQuery = em.createQuery(
@@ -110,5 +104,3 @@ public class UtenteDao {
 
 	}
 }
-
-//select *, (datainizio + 365) < now()  as scaduta from utenti u where (datainizio + 365) < now();

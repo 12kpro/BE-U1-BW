@@ -130,26 +130,3 @@ public class DocumentoViaggioDao {
 	}
 
 }
-/*
- * public List<Prestito> findByTesseraUtente(String t) { Query q = em.
- * createQuery("SELECT p FROM Prestito p JOIN Utente u on p.utente=u.id WHERE u.numeroTessera = :t"
- * ); q.setParameter("t", UUID.fromString(t)); return q.getResultList(); }
- * 
- * 
- * 
- * select tipo_documento,distributoreid_id , count(*) as numero from
- * documenti_viaggio where dataemissione BETWEEN '2023-04-01' AND '2023-05-31'
- * group by tipo_documento, distributoreid_id
- * 
- * select * from (select *, CASE WHEN dv.tipo = 'SETTIMANALE' THEN
- * dv.dataemissione + 7 < now() WHEN dv.tipo = 'MENSILE' THEN dv.dataemissione +
- * 30 < now() END AS scadenza from documenti_viaggio dv join utenti u on
- * dv.tesseraid_id = u.id ) s where scadenza
- * 
- * select count(*) as totale from documenti_viaggio dv where datavidimazione is
- * not null and dv.veicoloid_id = '79df7151-ee6d-41fa-a9f4-d694fe9a7f45'
- * 
- * select count(*) as totale from documenti_viaggio dv where datavidimazione is
- * not null and dv.datavidimazione BETWEEN '2023-04-01' AND '2023-04-30'
- * 
- */
