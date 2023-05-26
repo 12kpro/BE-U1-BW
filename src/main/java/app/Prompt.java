@@ -97,6 +97,10 @@ public class Prompt {
 
 					break;
 				case 7:
+					for (DocumentoViaggio result : dvd.getDocumentiPerPeriodoEDistributore("01-03-2023", "30-04-2023",
+							"f3478a49-0cb4-4b7c-98f6-83f38a29eb73")) {
+						log.info(result.toString());
+					}
 
 					break;
 				case 8:

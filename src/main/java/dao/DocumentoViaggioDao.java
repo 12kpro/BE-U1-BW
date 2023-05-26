@@ -1,6 +1,5 @@
 package dao;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -94,15 +93,14 @@ public class DocumentoViaggioDao {
 		return getAllQuery.getResultList();
 	}
 
-	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(LocalDate di, LocalDate df, String id)
+	public List<DocumentoViaggio> getDocumentiPerPeriodoEDistributore(String di, String df, String id)
 			throws PersistenceException {
-		TypedQuery<DocumentoViaggio> q = em.createQuery("SELECT tipo_documento,distributoreid_id , COUNT(*) as numero "
-				+ "FROM documenti_viaggio " + "WHERE dataEmissione BETWEEN dataInizio = :di AND dataFine = :df "
-				+ "GROUP BY tipo_documento, distributoreid_id = :id", DocumentoViaggio.class);
+		TypedQuery<DocumentoViaggio> q = em.createQuery(
+				"SELECT dv FROM DocumentoViaggio dv WHERE dataEmissione BETWEEN to_date(:di,'dd-mm-yyyy') AND to_date(:df,'dd-mm-yyyy') AND distributore = :id",
+				DocumentoViaggio.class);
 		q.setParameter("di", di);
 		q.setParameter("df", df);
-		q.setParameter("id", UUID.fromString(id));
-
+		q.setParameter("id", id);
 		return q.getResultList();
 
 	}
