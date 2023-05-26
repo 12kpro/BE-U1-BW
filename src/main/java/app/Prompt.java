@@ -214,7 +214,8 @@ public class Prompt {
 		while (true) {
 			System.out.printf("%d: per uscire %n", 0);
 			for (int i = 0; i < distributori.size(); i++) {
-				System.out.printf("%d: distributore %s%n", i + 1, distributori.get(i).getId());
+				System.out.printf("%d: distributore %s %s%n", i + 1, distributori.get(i).getNome(),
+						distributori.get(i).getIndirizzo());
 			}
 			int selected = Math.abs(Integer.parseInt(input.nextLine()));
 
